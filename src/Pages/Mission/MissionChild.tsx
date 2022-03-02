@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Dimensions,
   Image,
@@ -6,26 +6,26 @@ import {
   Pressable,
   SafeAreaView,
   StyleSheet,
-  Text,
   View,
 } from 'react-native';
+import Toast from 'react-native-simple-toast';
 import Typography from '../../Components/Typography';
-const { width, height } = Dimensions.get('screen');
+
+const { width } = Dimensions.get('screen');
 
 const MissionChild = () => {
   const [isSelect, setSelect] = useState([false, false, false]);
   const [isSuccess, setSuccess] = useState([false, false, false]);
 
   const handleSelectState = (num: number, result: string) => {
-    // const selectList = isSelect;
-    // selectList[num] = true;
-
     setSelect([...isSelect.slice(0, num), true, ...isSelect.slice(num + 1)]);
 
     if (result == 'success') {
-      const successList = isSuccess;
-      successList[num] = true;
-      setSuccess(successList);
+      setSuccess([
+        ...isSuccess.slice(0, num),
+        true,
+        ...isSuccess.slice(num + 1),
+      ]);
     }
   };
 
@@ -51,6 +51,7 @@ const MissionChild = () => {
               style={styles.buttonStyle}
               onPress={() => {
                 handleSelectState(num, 'success');
+                Toast.show('미션 성공 🎉', Toast.SHORT, ['UIAlertController']);
               }}>
               <Typography value="성공" type="subtitle" />
             </Pressable>
@@ -58,6 +59,7 @@ const MissionChild = () => {
               style={styles.buttonStyle}
               onPress={() => {
                 handleSelectState(num, 'fail');
+                Toast.show('미션 실패 💦');
               }}>
               <Typography value="실패" type="subtitle" />
             </Pressable>
