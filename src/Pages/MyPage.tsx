@@ -1,11 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Dimensions,
   Image,
+  Keyboard,
+  Modal,
   Platform,
   Pressable,
   SafeAreaView,
   StyleSheet,
+  Text,
+  TextInput,
+  TouchableWithoutFeedback,
   View,
 } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
@@ -14,60 +19,41 @@ import Typography from '../Components/Typography';
 const { width } = Dimensions.get('screen');
 
 const MyPage = () => {
-  const data = {
-    labels: ['01/01', '01/21', '02/14', '02/31', '03/15', '03/30'],
-    datasets: [
-      {
-        data: [35, 34.3, 34.5, 34.5, 33.7, 33.8],
-        color: (opacity = 1) => `#9CB96A`,
-        strokeWidth: 2,
-      },
-    ],
+  const [modalVisible, setModalVisible] = useState(false);
+  const [isComplete, setComplete] = useState(false); // height, weight 작성 여부 for enter event
+  const [inputs, setInputs] = useState<any>({ height: '', weight: '' });
+  const date = new Date();
+  const dateList = ['01/01', '01/21', '02/14', '02/31', '03/15', '03/30'];
+  const weightList = [35, 34.3, 34.5, 34.5, 33.7, 33.8];
+  const heightList = [150, 150.3, 150.5, 150.5, 153, 153.8];
+
+  const getGraph = (type: string, growList: Array<number>) => {
+    const data = {
+      labels: !isComplete
+        ? dateList
+        : [...dateList, `${date.getMonth()}/${date.getDate()}`],
+      datasets: [
+        {
+          data: !isComplete ? growList : [...growList, inputs[type]],
+          color: () => `#9CB96A`,
+          strokeWidth: 2,
+        },
+      ],
+    };
+
+    return (
+      <LineChart
+        data={data}
+        width={width - 45}
+        height={170}
+        chartConfig={chartConfig}
+        withVerticalLines={false}
+        style={styles.chartContainer}
+        withShadow={false}
+      />
+    );
   };
-  const data1 = [
-    {
-      name: 'Page A',
-      uv: 4000,
-      pv: 2400,
-      amt: 2400,
-    },
-    {
-      name: 'Page B',
-      uv: 3000,
-      pv: 1398,
-      amt: 2210,
-    },
-    {
-      name: 'Page C',
-      uv: 2000,
-      pv: 9800,
-      amt: 2290,
-    },
-    {
-      name: 'Page D',
-      uv: 2780,
-      pv: 3908,
-      amt: 2000,
-    },
-    {
-      name: 'Page E',
-      uv: 1890,
-      pv: 4800,
-      amt: 2181,
-    },
-    {
-      name: 'Page F',
-      uv: 2390,
-      pv: 3800,
-      amt: 2500,
-    },
-    {
-      name: 'Page G',
-      uv: 3490,
-      pv: 4300,
-      amt: 2100,
-    },
-  ];
+
   return (
     <SafeAreaView style={styles.container}>
       <Image
@@ -93,7 +79,11 @@ const MyPage = () => {
       {/* 키, 몸무게 그래프 */}
       <View style={styles.growProfile}>
         <Typography value="서준이의 키와 몸무게" type="subtitle" />
-        <Pressable style={styles.addGrowButton}>
+        <Pressable
+          style={styles.addGrowButton}
+          onPress={() => {
+            setModalVisible(true);
+          }}>
           <Typography
             value="+"
             type="subtitle"
@@ -101,15 +91,54 @@ const MyPage = () => {
           />
         </Pressable>
       </View>
-      <LineChart
-        data={data}
-        width={width - 45}
-        height={220}
-        chartConfig={chartConfig}
-        withVerticalLines={false}
-        style={{ marginTop: 10, marginLeft: -10 }}
-        withShadow={false}
-      />
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Typography
+                type="subtitle"
+                value="키와 몸무게를 입력해주세요."
+                textStyle={styles.modalText}
+              />
+              <View style={styles.modalInputContainer}>
+                <TextInput
+                  placeholder="키를 입력해주세요"
+                  keyboardType="numeric"
+                  autoFocus={true}
+                  style={styles.modalInput}
+                  onChangeText={e => setInputs({ ...inputs, ['height']: e })}
+                />
+                <TextInput
+                  placeholder="몸무게를 입력해주세요"
+                  keyboardType="numeric"
+                  style={styles.modalInput}
+                  onChangeText={e => setInputs({ ...inputs, ['weight']: e })}
+                  onSubmitEditing={() => {
+                    setModalVisible(!modalVisible);
+                    setComplete(true);
+                  }}
+                />
+              </View>
+              <Pressable
+                style={styles.modalButton}
+                onPress={() => {
+                  setModalVisible(!modalVisible);
+                  setComplete(true);
+                }}>
+                <Text style={styles.textStyle}>등록</Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
+      </TouchableWithoutFeedback>
+      {getGraph('height', heightList)}
+      {getGraph('weight', weightList)}
     </SafeAreaView>
   );
 };
@@ -131,6 +160,49 @@ const styles = StyleSheet.create({
     width: width,
     height: 105,
     marginBottom: 50,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+
+  modalButton: {
+    width: 55,
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+    backgroundColor: '#9CB96A',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    fontSize: 15,
+    textAlign: 'center',
+  },
+  modalInputContainer: { alignSelf: 'flex-start' },
+  modalInput: {
+    marginBottom: 15,
   },
   profileContainer: {
     flexDirection: 'row',
@@ -187,6 +259,11 @@ const styles = StyleSheet.create({
         elevation: 3,
       },
     }),
+  },
+  chartContainer: {
+    marginTop: 10,
+    marginLeft: -10,
+    marginBottom: 10,
   },
 });
 
