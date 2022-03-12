@@ -1,13 +1,13 @@
 import React from 'react';
 import { Dimensions, Image, SafeAreaView, StyleSheet } from 'react-native';
-import { Agenda, Calendar, CalendarList } from 'react-native-calendars';
-import Typography from '../Components/Typography';
+import { Calendar } from 'react-native-calendars';
+import Typography from '../../Components/Typography';
 
 const Report = () => {
   return (
     <SafeAreaView style={styles.container}>
       <Image
-        source={require('../Assets/logoTop.png')}
+        source={require('../../Assets/logoTop.png')}
         style={styles.logoStyle}
       />
       <Typography
