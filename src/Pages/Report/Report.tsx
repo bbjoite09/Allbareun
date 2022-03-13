@@ -4,17 +4,47 @@ import {
   Image,
   SafeAreaView,
   ScrollView,
-  StatusBar,
   StyleSheet,
-  Text,
   View,
 } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
-import Typography from '../Components/Typography';
+import Typography from '../../Components/Typography';
+import RadarChart from './RadarChart';
 
 const { width } = Dimensions.get('window');
 
 const Report = () => {
+  const data1 = [
+    {
+      data: {
+        battery: 0.7,
+        design: 0.8,
+        useful: 0.9,
+        speed: 0.67,
+        weight: 0.8,
+      },
+      meta: { color: 'blue' },
+    },
+    {
+      data: {
+        battery: 0.6,
+        design: 0.85,
+        useful: 0.5,
+        speed: 0.6,
+        weight: 0.7,
+      },
+      meta: { color: 'red' },
+    },
+  ];
+
+  const captions = {
+    // columns
+    battery: 'Battery Capacity',
+    design: 'Design',
+    useful: 'Usefulness',
+    speed: 'Speed',
+    weight: 'Weight',
+  };
   const dateList = [2021.12, 2022.01, 2022.02, 2022.03];
   const acheiveCountList = [150, 130, 100, 140];
   const data = {
@@ -31,7 +61,7 @@ const Report = () => {
   return (
     <SafeAreaView style={styles.container}>
       <Image
-        source={require('../Assets/logoTopDetail.png')}
+        source={require('../../Assets/logoTopDetail.png')}
         style={styles.logoStyle}
       />
       <ScrollView>
@@ -49,7 +79,7 @@ const Report = () => {
           <Typography value="권장" textStyle={styles.nutriScoreText} />
           <Typography value="초과" textStyle={styles.nutriScoreText} />
         </View>
-
+        <RadarChart />
         <Typography
           value="이번 한달간 탄수화물, 지방의 섭취량은 표준이상이며, 단백질, 나트륨의 섭취량은 표준 이하입니다."
           textStyle={{ textAlign: 'left', padding: 25 }}
