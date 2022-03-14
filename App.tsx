@@ -1,12 +1,29 @@
-import React from 'react';
+import * as React from 'react';
+import { Text, View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MissionChild from './src/Pages/Mission/MissionChild';
-import MissionParents from './src/Pages/Mission/MissionParents';
-import MyPage from './src/Pages/MyPage';
-import MissionListDetail from './src/Pages/MissionList/MissionListDetail';
+import MissionList from './src/Pages/MissionList/MissionList';
 import Report from './src/Pages/Report/Report';
+import MyPage from './src/Pages/MyPage';
 
-const App = () => {
-  return <Report />;
-};
+const Tab = createBottomTabNavigator();
 
-export default App;
+function MyTabs() {
+  return (
+    <Tab.Navigator screenOptions={{ headerShown: false }}>
+      <Tab.Screen name="Mission" component={MissionChild} />
+      <Tab.Screen name="MissionList" component={MissionList} />
+      <Tab.Screen name="Report" component={Report} />
+      <Tab.Screen name="Mypage" component={MyPage} />
+    </Tab.Navigator>
+  );
+}
+
+export default function App() {
+  return (
+    <NavigationContainer>
+      <MyTabs />
+    </NavigationContainer>
+  );
+}
