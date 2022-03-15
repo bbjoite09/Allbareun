@@ -1,9 +1,18 @@
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React from 'react';
-import { Dimensions, Image, SafeAreaView, StyleSheet } from 'react-native';
+import {
+  Dimensions,
+  Image,
+  Pressable,
+  SafeAreaView,
+  StyleSheet,
+} from 'react-native';
 import { Calendar } from 'react-native-calendars';
+import { RootStackParamList } from '../../../App';
 import Typography from '../../Components/Typography';
 
-const Report = () => {
+type Props = NativeStackScreenProps<RootStackParamList, 'MissionList'>;
+const MissionList = ({ navigation }: Props) => {
   return (
     <SafeAreaView style={styles.container}>
       <Image
@@ -20,12 +29,9 @@ const Report = () => {
         minDate={'2022-01-01'}
         maxDate={'2022-12-31'}
         onDayPress={day => {
-          console.log('selected day', day);
+          navigation.navigate('MissionListDetail', { day });
         }}
         monthFormat={'yyyy년 MM월'}
-        onMonthChange={month => {
-          console.log('month changed', month);
-        }}
         hideExtraDays={true}
         firstDay={1}
         hideDayNames={false}
@@ -45,6 +51,7 @@ const styles = StyleSheet.create({
     color: '#3F3F3F',
   },
   container: {
+    backgroundColor: 'white',
     flex: 1,
   },
   logoStyle: {
@@ -54,4 +61,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Report;
+export default MissionList;

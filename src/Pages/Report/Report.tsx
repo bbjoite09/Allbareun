@@ -117,11 +117,12 @@ const chartConfig = {
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: 'white',
     flex: 1,
   },
   logoStyle: {
     width: width,
-    height: 105,
+    height: 75,
   },
   textStyle: {
     marginTop: 20,

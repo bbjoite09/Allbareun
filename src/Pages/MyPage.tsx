@@ -7,6 +7,7 @@ import {
   Platform,
   Pressable,
   SafeAreaView,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -16,22 +17,22 @@ import {
 import { LineChart } from 'react-native-chart-kit';
 import Typography from '../Components/Typography';
 
-const { width } = Dimensions.get('screen');
+const { width, height } = Dimensions.get('screen');
 
 const MyPage = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [isComplete, setComplete] = useState(false); // height, weight 작성 여부 for enter event
   const [inputs, setInputs] = useState<any>({ height: '', weight: '' });
   const date = new Date();
-  const dateList = ['01/01', '01/21', '02/14', '02/31', '03/15', '03/30'];
-  const weightList = [35, 34.3, 34.5, 34.5, 33.7, 33.8];
-  const heightList = [150, 150.3, 150.5, 150.5, 153, 153.8];
+  const dateList = ['01/01', '01/21', '02/14', '02/31'];
+  const weightList = [35, 34.3, 34.5, 34.5];
+  const heightList = [150, 150.3, 150.5, 150.5];
 
   const getGraph = (type: string, growList: Array<number>) => {
     const data = {
       labels: !isComplete
         ? dateList
-        : [...dateList, `${date.getMonth()}/${date.getDate()}`],
+        : [...dateList, `${date.getMonth() + 1}/${date.getDate()}`],
       datasets: [
         {
           data: !isComplete ? growList : [...growList, inputs[type]],
@@ -60,37 +61,41 @@ const MyPage = () => {
         source={require('../Assets/logoTopDetail.png')}
         style={styles.logoStyle}
       />
-      {/* 어린이 프로필 정보 */}
-      <View style={styles.profileContainer}>
-        <Image
-          source={require('../Assets/MyPage/profileImg.jpeg')}
-          style={styles.profileImage}
-        />
-        <View style={styles.profileText}>
-          <Typography value="최시준 어린이" type="subtitle" />
-          <Typography
-            value="나이 : 11세"
-            type="subtitle"
-            textStyle={{ textAlign: 'left', paddingTop: 10 }}
+      <ScrollView style={{ height }}>
+        {/* 어린이 프로필 정보 */}
+        <View style={styles.profileContainer}>
+          <Image
+            source={require('../Assets/MyPage/profileImg.jpeg')}
+            style={styles.profileImage}
           />
+          <View style={styles.profileText}>
+            <Typography value="최시준 어린이" type="subtitle" />
+            <Typography
+              value="나이 : 11세"
+              type="subtitle"
+              textStyle={{ textAlign: 'left', paddingTop: 10 }}
+            />
+          </View>
         </View>
-      </View>
 
-      {/* 키, 몸무게 그래프 */}
-      <View style={styles.growProfile}>
-        <Typography value="서준이의 키와 몸무게" type="subtitle" />
-        <Pressable
-          style={styles.addGrowButton}
-          onPress={() => {
-            setModalVisible(true);
-          }}>
-          <Typography
-            value="+"
-            type="subtitle"
-            textStyle={{ color: 'white' }}
-          />
-        </Pressable>
-      </View>
+        {/* 키, 몸무게 그래프 */}
+        <View style={styles.growProfile}>
+          <Typography value="서준이의 키와 몸무게" type="subtitle" />
+          <Pressable
+            style={styles.addGrowButton}
+            onPress={() => {
+              setModalVisible(true);
+            }}>
+            <Typography
+              value="+"
+              type="subtitle"
+              textStyle={{ color: 'white' }}
+            />
+          </Pressable>
+        </View>
+        {getGraph('height', heightList)}
+        {getGraph('weight', weightList)}
+      </ScrollView>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <Modal
           animationType="slide"
@@ -137,8 +142,6 @@ const MyPage = () => {
           </View>
         </Modal>
       </TouchableWithoutFeedback>
-      {getGraph('height', heightList)}
-      {getGraph('weight', weightList)}
     </SafeAreaView>
   );
 };
@@ -153,13 +156,14 @@ const chartConfig = {
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: 'white',
     display: 'flex',
     alignItems: 'center',
   },
   logoStyle: {
     width: width,
-    height: 105,
-    marginBottom: 50,
+    height: 75,
+    marginBottom: 30,
   },
   centeredView: {
     flex: 1,
@@ -238,8 +242,7 @@ const styles = StyleSheet.create({
   },
   growProfile: {
     flexDirection: 'row',
-    marginTop: 50,
-    marginLeft: 30,
+    marginTop: 40,
     alignSelf: 'flex-start',
   },
   addGrowButton: {

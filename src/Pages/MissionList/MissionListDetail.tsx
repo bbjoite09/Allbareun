@@ -1,3 +1,4 @@
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
 import {
   Dimensions,
@@ -9,11 +10,15 @@ import {
   View,
 } from 'react-native';
 import Toast from 'react-native-simple-toast';
+import { RootStackParamList } from '../../../App';
 import Typography from '../../Components/Typography';
 
 const { width } = Dimensions.get('screen');
+type Props = NativeStackScreenProps<RootStackParamList, 'MissionListDetail'>;
 
-const MissionListDetail = () => {
+const MissionListDetail = ({ navigation, route }: Props) => {
+  const { day }: any = route.params;
+
   const getMission = (mission: any) => {
     return (
       <View style={[styles.missionContainer]}>
@@ -31,12 +36,14 @@ const MissionListDetail = () => {
   };
   return (
     <SafeAreaView style={styles.container}>
-      <Image
-        source={require('../../Assets/logoTop.png')}
-        style={styles.logoStyle}
-      />
+      <Pressable onPress={() => navigation.navigate('MissionList')}>
+        <Image
+          source={require('../../Assets/logoTop.png')}
+          style={styles.logoStyle}
+        />
+      </Pressable>
       <Typography
-        value="2022년 03월 11일"
+        value={`${day.year}년 ${day.month}월 ${day.day}일`}
         type="title"
         containerStyle={{ marginBottom: 20 }}
       />
@@ -73,6 +80,7 @@ const styles = StyleSheet.create({
     textAlignVertical: 'center',
   },
   container: {
+    backgroundColor: 'white',
     flex: 1,
     alignItems: 'center',
   },
