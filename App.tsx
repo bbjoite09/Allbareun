@@ -4,12 +4,19 @@
 import * as React from 'react';
 import { AppState, Image, StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MissionChild from './src/Pages/Mission/MissionChild';
 import MissionList from './src/Pages/MissionList/MissionList';
 import Report from './src/Pages/Report/Report';
 import MyPage from './src/Pages/MyPage';
 import Typography from './src/Components/Typography';
+import MissionListDetail from './src/Pages/MissionList/MissionListDetail';
+
+export type RootStackParamList = {
+  MissionList: undefined;
+  MissionListDetail: { day: object };
+};
 
 const Tab = createBottomTabNavigator();
 
@@ -100,10 +107,29 @@ function MyTabs() {
   );
 }
 
+const Stack = createNativeStackNavigator();
+
+const AllStack = () => {
+  return (
+    <Stack.Navigator initialRouteName="TabNavi">
+      <Stack.Screen
+        name="TabNavi"
+        component={MyTabs}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="MissionListDetail"
+        component={MissionListDetail}
+        options={{ headerShown: false }}
+      />
+    </Stack.Navigator>
+  );
+};
+
 const App = () => {
   return (
     <NavigationContainer>
-      <MyTabs />
+      <AllStack />
     </NavigationContainer>
   );
 };
