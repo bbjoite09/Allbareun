@@ -45,6 +45,7 @@ const styles = StyleSheet.create({
     color: '#3F3F3F',
   },
   container: {
+    backgroundColor: 'white',
     flex: 1,
   },
   logoStyle: {

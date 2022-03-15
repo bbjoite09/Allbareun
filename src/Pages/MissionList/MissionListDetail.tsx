@@ -73,6 +73,7 @@ const styles = StyleSheet.create({
     textAlignVertical: 'center',
   },
   container: {
+    backgroundColor: 'white',
     flex: 1,
     alignItems: 'center',
   },

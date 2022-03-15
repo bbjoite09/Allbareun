@@ -86,7 +86,7 @@ const MissionChild = () => {
   };
 
   return (
-    <SafeAreaView style={styles.pageContainer}>
+    <SafeAreaView style={styles.container}>
       <Image
         source={require('../../Assets/logoTop.png')}
         style={styles.logoStyle}
@@ -159,7 +159,8 @@ const styles = StyleSheet.create({
     height: 105,
     marginBottom: 50,
   },
-  pageContainer: {
+  container: {
+    backgroundColor: 'white',
     flex: 1,
     alignItems: 'center',
   },
