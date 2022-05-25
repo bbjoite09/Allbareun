@@ -1,17 +1,17 @@
 // 아이콘 출처
 // https://www.flaticon.com/kr/free-icons/ 아이콘 제작자: Freepik - Flaticon
 
-import * as React from 'react';
-import { AppState, Image, StyleSheet, Text, View } from 'react-native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import MissionChild from './src/Pages/Mission/MissionChild';
-import MissionList from './src/Pages/MissionList/MissionList';
-import Report from './src/Pages/Report/Report';
-import MyPage from './src/Pages/MyPage';
+import * as React from 'react';
+import { Image, StyleSheet } from 'react-native';
 import Typography from './src/Components/Typography';
+import MissionParents from './src/Pages/Mission/MissionParents';
+import MissionList from './src/Pages/MissionList/MissionList';
 import MissionListDetail from './src/Pages/MissionList/MissionListDetail';
+import MyPage from './src/Pages/MyPage';
+import Report from './src/Pages/Report/Report';
 
 export type RootStackParamList = {
   MissionList: undefined;
@@ -25,7 +25,7 @@ function MyTabs() {
     <Tab.Navigator screenOptions={{ headerShown: false }}>
       <Tab.Screen
         name="Mission"
-        component={MissionChild}
+        component={MissionParents}
         options={{
           tabBarLabel: ({ focused }) =>
             focused ? <Typography value="미션" /> : null,
