@@ -97,9 +97,9 @@ const MissionChild = () => {
         containerStyle={{ marginBottom: 20 }}
       />
       <View style={{ flexDirection: 'column' }}>
-        {handleMission('id1', '오이 먹기')}
-        {handleMission('id2', '점심 남기지 않기')}
-        {handleMission('id3', '오렌지 반개 먹기')}
+        {handleMission('id1', '새우볶음밥 먹기')}
+        {handleMission('id2', '갈치조림 먹기')}
+        {handleMission('id3', '시금치 나물 먹기')}
       </View>
     </SafeAreaView>
   );

@@ -1,26 +1,58 @@
 import React, { useState } from 'react';
+// import * as Hangul from 'hangul-js';
+import * as Progress from 'react-native-progress';
 import {
   Dimensions,
   Image,
   Platform,
   Pressable,
   SafeAreaView,
+  ScrollView,
   StyleSheet,
   View,
+  Modal,
+  Text,
+  Alert,
+  TextInput,
 } from 'react-native';
-import Toast from 'react-native-simple-toast';
 import Typography from '../../Components/Typography';
+import foodDB from '../../Data/foodList.json';
 
 const { width } = Dimensions.get('screen');
 
-const MissionChild = () => {
-  const [isSelect, setSelect] = useState<any>({
-    id1: false,
-    id2: false,
-    id3: false,
-  });
+const MissionParents = () => {
+  const [isSelect, setSelect] = useState<any>([false, false, false]);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [text, setText] = useState<any>();
+  const [search, setSearch] = useState<any>(null);
+  const [personalEnergy, setPersonalEnergy] = useState<any>([0]);
+  const [energy, setEnergy] = useState<any>([0]);
+  const [personalMission, setPersonalMission] = useState<any>([]);
 
-  const handleMission = (id: any, mission: string) => {
+  // const searchText = useRef<any>();
+
+  // // DB 초성열 추가
+  // foodDB.forEach(function (item: any) {
+  //   if (item.name) {
+  //     const dis = Hangul.disassemble(item.name, true);
+  //     const cho = dis.reduce(function (prev, elem: any) {
+  //       elem = elem[0] ? elem[0] : elem;
+  //       return prev + elem;
+  //     }, '');
+  //     item.diassembled = cho;
+  //   }
+  // });
+
+  const addEnergy = (id: number, kcal: number) => {
+    if (isSelect[id]) {
+      setEnergy([...energy.slice(0, id + 1), 0, ...energy.slice(id + 2)]);
+    } else {
+      setEnergy([...energy.slice(0, id + 1), kcal, ...energy.slice(id + 2)]);
+      console.log(energy);
+    }
+  };
+
+  const handleMission = (id: number, mission: string, kcal: number) => {
     return (
       <Pressable
         style={[
@@ -28,7 +60,12 @@ const MissionChild = () => {
           { backgroundColor: isSelect[id] ? '#ACE1C8' : 'white' },
         ]}
         onPress={() => {
-          setSelect({ ...isSelect, [id]: !isSelect[id] });
+          setSelect([
+            ...isSelect.slice(0, id),
+            !isSelect[id],
+            ...isSelect.slice(id + 1),
+          ]);
+          addEnergy(id, kcal);
         }}>
         <Image
           source={require('../../Assets/Mission/missionImg.png')}
@@ -43,6 +80,76 @@ const MissionChild = () => {
     );
   };
 
+  const getModal = () => {
+    return (
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          Alert.alert('Modal has been closed.');
+          setModalVisible(!modalVisible);
+        }}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <TextInput
+              style={{
+                width: '100%',
+                height: 45,
+                paddingLeft: '5%',
+                fontSize: 16,
+                borderWidth: 1,
+                borderColor: '#BED0AB',
+              }}
+              placeholder="추가할 음식을 입력하세요."
+              onChangeText={(e: any) => {
+                setText(e);
+              }}
+            />
+            <ScrollView style={{ width: '100%' }}>
+              {foodDB
+                .filter(data => {
+                  if (
+                    data.name.includes(text)
+                    // || data.diassembled.includes(Hangul.disassemble(text).join('')!,)
+                  ) {
+                    return data;
+                  }
+                  if (search === '') {
+                    return;
+                  } else if (search == null) {
+                    null;
+                  }
+                })
+                .map(data => {
+                  return (
+                    <Pressable
+                      key={data.id}
+                      onPress={() => {
+                        setPersonalEnergy([...personalEnergy, data.energy]);
+                        setPersonalMission([...personalMission, data.name]);
+                        setModalVisible(!modalVisible);
+                      }}>
+                      <View style={styles.modalList}>
+                        <Text style={styles.modalText}>{data.name}</Text>
+                      </View>
+                    </Pressable>
+                  );
+                })}
+            </ScrollView>
+            <View>
+              <Pressable
+                style={styles.selectButton}
+                onPress={() => setModalVisible(!modalVisible)}>
+                <Text style={styles.moddalButtonText}>닫기</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    );
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <Image
@@ -54,17 +161,109 @@ const MissionChild = () => {
         type="title"
         containerStyle={{ marginBottom: 20 }}
       />
-      <View style={{ flexDirection: 'column' }}>
-        {handleMission('id1', '오이 먹기')}
-        {handleMission('id2', '점심 남기지 않기')}
-        {handleMission('id3', '오렌지 반개 먹기')}
+      <View
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginBottom: '5%',
+        }}>
+        <Text>총 열량 : </Text>
+        <Progress.Bar
+          progress={
+            (energy.reduce((sum: any, now: any) => sum + now) +
+              personalEnergy.reduce((sum: any, now: any) => sum + now)) /
+            1550
+          }
+          width={width - 150}
+          height={20}
+          color={'rgba(0, 130, 80, 1)'}
+          style={{ marginLeft: '3%', marginRight: '3%' }}
+        />
+        <Image
+          source={
+            energy.reduce((sum: any, now: any) => sum + now) +
+              personalEnergy.reduce((sum: any, now: any) => sum + now) <
+            1550
+              ? require('../../Assets/Mission/pigGray.png')
+              : require('../../Assets/Mission/pig.png')
+          }
+          style={{ resizeMode: 'contain', width: 30, height: 30 }}
+        />
       </View>
-
-      <Pressable style={styles.selectButton}>
+      <ScrollView>
+        {personalMission.map((data: any, idx: number) => {
+          return (
+            <Pressable
+              key={idx}
+              style={[styles.missionContainer, { backgroundColor: '#ACE1C8' }]}
+              onPress={() => {
+                setPersonalEnergy([
+                  ...personalEnergy.slice(0, idx + 1),
+                  ...personalEnergy.slice(idx + 2),
+                ]);
+                setPersonalMission([
+                  ...personalMission.slice(0, idx),
+                  ...personalMission.slice(idx + 1),
+                ]);
+              }}>
+              <Image
+                source={require('../../Assets/Mission/missionImg.png')}
+                style={styles.missionImage}
+              />
+              <Typography
+                value={data}
+                type="subtitle"
+                textStyle={styles.missionText}
+              />
+            </Pressable>
+          );
+        })}
+        <View style={{ flexDirection: 'column' }}>
+          {handleMission(0, '오이 먹기', 30)}
+          {handleMission(1, '고등어 조림 먹기', 122)}
+          {handleMission(2, '오렌지 반개 먹기', 100)}
+        </View>
+        <View style={{ flexDirection: 'column' }}>
+          {getModal()}
+          {energy.reduce((sum: any, now: any) => sum + now) +
+            personalEnergy.reduce((sum: any, now: any) => sum + now) >=
+          1550
+            ? Alert.alert('돼지경보')
+            : null}
+          <Pressable
+            style={[styles.missionContainer, { backgroundColor: '#D9D9D9' }]}
+            onPress={() => setModalVisible(true)}>
+            <Image
+              source={require('../../Assets/Mission/plus.png')}
+              style={[
+                styles.missionImage,
+                {
+                  borderWidth: 0,
+                  width: 50,
+                  height: 50,
+                  backgroundColor: '#D9D9D9',
+                },
+              ]}
+            />
+            <Typography
+              value={'직접 추가하기'}
+              type="subtitle"
+              textStyle={styles.missionText}
+            />
+          </Pressable>
+        </View>
+      </ScrollView>
+      <Pressable style={[styles.selectButton, { marginBottom: 30 }]}>
         <Typography
           value="미션 선택 완료"
           type="title"
-          textStyle={{ textDecorationLine: 'none' }}
+          textStyle={{
+            textDecorationLine: 'none',
+            color: 'white',
+            fontSize: 22,
+          }}
         />
       </Pressable>
     </SafeAreaView>
@@ -81,6 +280,47 @@ const styles = StyleSheet.create({
     width: width,
     height: 76,
     marginBottom: -1,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    width: '80%',
+    height: '50%',
+  },
+  modalList: {
+    width: '100%',
+    borderBottomWidth: 1,
+    borderColor: '#BED0AB',
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+  },
+  modalText: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginLeft: '2%',
+  },
+  moddalButtonText: {
+    fontSize: 16,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    color: 'white',
   },
   missionImage: {
     width: 47,
@@ -125,7 +365,7 @@ const styles = StyleSheet.create({
   logoStyle: {
     width: width,
     height: 105,
-    marginBottom: 50,
+    marginBottom: 20,
   },
   container: {
     backgroundColor: 'white',
@@ -139,9 +379,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#8CC751',
     borderRadius: 10,
     justifyContent: 'center',
-    marginTop: 'auto',
-    marginBottom: 30,
+    marginTop: '5%',
   },
 });
 
-export default MissionChild;
+export default MissionParents;
