@@ -1,4 +1,5 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
+import * as Hangul from 'hangul-js';
 import {
   Dimensions,
   Image,
@@ -14,6 +15,7 @@ import {
   TextInput,
 } from 'react-native';
 import Typography from '../../Components/Typography';
+import foodDB from '../../Data/foodList.json';
 
 const { width } = Dimensions.get('screen');
 
@@ -24,7 +26,21 @@ const MissionParents = () => {
     id3: false,
   });
   const [modalVisible, setModalVisible] = useState(false);
-  const addFood = useRef();
+  const [text, setText] = useState<any>();
+  const [search, setSearch] = useState<any>(null);
+  // const searchText = useRef<any>();
+
+  // // DB 초성열 추가
+  // foodDB.forEach(function (item: any) {
+  //   if (item.name) {
+  //     const dis = Hangul.disassemble(item.name, true);
+  //     const cho = dis.reduce(function (prev, elem: any) {
+  //       elem = elem[0] ? elem[0] : elem;
+  //       return prev + elem;
+  //     }, '');
+  //     item.diassembled = cho;
+  //   }
+  // });
 
   const handleMission = (id: any, mission: string) => {
     return (
@@ -50,7 +66,6 @@ const MissionParents = () => {
   };
 
   const getModal = () => {
-    const [text, setText] = useState('');
     return (
       <Modal
         animationType="slide"
@@ -72,13 +87,32 @@ const MissionParents = () => {
                 borderColor: '#BED0AB',
               }}
               placeholder="추가할 음식을 입력하세요."
-              onChangeText={newText => setText(newText)}
-              defaultValue={text}
+              onChangeText={(e: any) => {
+                setText(e);
+              }}
             />
             <ScrollView style={{ width: '100%' }}>
-              <View style={styles.modalList}>
-                <Text style={styles.modalText}>test1</Text>
-              </View>
+              {foodDB
+                .filter(data => {
+                  if (
+                    data.name.includes(text)
+                    // || data.diassembled.includes(Hangul.disassemble(text).join('')!,)
+                  ) {
+                    return data;
+                  }
+                  if (search === '') {
+                    return;
+                  } else if (search == null) {
+                    null;
+                  }
+                })
+                .map(data => {
+                  return (
+                    <View key={data.id} style={styles.modalList}>
+                      <Text style={styles.modalText}>{data.name}</Text>
+                    </View>
+                  );
+                })}
             </ScrollView>
             <View style={{}}>
               <Pressable
