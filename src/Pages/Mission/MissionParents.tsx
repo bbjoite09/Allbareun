@@ -171,6 +171,7 @@ const MissionParents = () => {
         }}>
         <Text>총 열량 : </Text>
         <Progress.Bar
+          animationType="timing"
           progress={
             (energy.reduce((sum: any, now: any) => sum + now) +
               personalEnergy.reduce((sum: any, now: any) => sum + now)) /
@@ -179,7 +180,11 @@ const MissionParents = () => {
           width={width - 150}
           height={20}
           color={'rgba(0, 130, 80, 1)'}
-          style={{ marginLeft: '3%', marginRight: '3%' }}
+          style={{
+            marginLeft: '3%',
+            marginRight: '3%',
+            backgroundColor: 'rgba(0, 130, 80, 0.2)',
+          }}
         />
         <Image
           source={
