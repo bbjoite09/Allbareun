@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import * as Hangul from 'hangul-js';
+// import * as Hangul from 'hangul-js';
+import * as Progress from 'react-native-progress';
 import {
   Dimensions,
   Image,
@@ -20,14 +21,14 @@ import foodDB from '../../Data/foodList.json';
 const { width } = Dimensions.get('screen');
 
 const MissionParents = () => {
-  const [isSelect, setSelect] = useState<any>({
-    id1: false,
-    id2: false,
-    id3: false,
-  });
+  const [isSelect, setSelect] = useState<any>([false, false, false]);
   const [modalVisible, setModalVisible] = useState(false);
   const [text, setText] = useState<any>();
   const [search, setSearch] = useState<any>(null);
+  const [personalEnergy, setPersonalEnergy] = useState<any>([0]);
+  const [energy, setEnergy] = useState<any>([0]);
+  const [personalMission, setPersonalMission] = useState<any>([]);
+
   // const searchText = useRef<any>();
 
   // // DB 초성열 추가
@@ -42,7 +43,16 @@ const MissionParents = () => {
   //   }
   // });
 
-  const handleMission = (id: any, mission: string) => {
+  const addEnergy = (id: number, kcal: number) => {
+    if (isSelect[id]) {
+      setEnergy([...energy.slice(0, id + 1), 0, ...energy.slice(id + 2)]);
+    } else {
+      setEnergy([...energy.slice(0, id + 1), kcal, ...energy.slice(id + 2)]);
+      console.log(energy);
+    }
+  };
+
+  const handleMission = (id: number, mission: string, kcal: number) => {
     return (
       <Pressable
         style={[
@@ -50,7 +60,12 @@ const MissionParents = () => {
           { backgroundColor: isSelect[id] ? '#ACE1C8' : 'white' },
         ]}
         onPress={() => {
-          setSelect({ ...isSelect, [id]: !isSelect[id] });
+          setSelect([
+            ...isSelect.slice(0, id),
+            !isSelect[id],
+            ...isSelect.slice(id + 1),
+          ]);
+          addEnergy(id, kcal);
         }}>
         <Image
           source={require('../../Assets/Mission/missionImg.png')}
@@ -108,17 +123,25 @@ const MissionParents = () => {
                 })
                 .map(data => {
                   return (
-                    <View key={data.id} style={styles.modalList}>
-                      <Text style={styles.modalText}>{data.name}</Text>
-                    </View>
+                    <Pressable
+                      key={data.id}
+                      onPress={() => {
+                        setPersonalEnergy([...personalEnergy, data.energy]);
+                        setPersonalMission([...personalMission, data.name]);
+                        setModalVisible(!modalVisible);
+                      }}>
+                      <View style={styles.modalList}>
+                        <Text style={styles.modalText}>{data.name}</Text>
+                      </View>
+                    </Pressable>
                   );
                 })}
             </ScrollView>
-            <View style={{}}>
+            <View>
               <Pressable
                 style={styles.selectButton}
                 onPress={() => setModalVisible(!modalVisible)}>
-                <Text style={styles.moddalButtonText}>추가하기</Text>
+                <Text style={styles.moddalButtonText}>닫기</Text>
               </Pressable>
             </View>
           </View>
@@ -138,14 +161,77 @@ const MissionParents = () => {
         type="title"
         containerStyle={{ marginBottom: 20 }}
       />
+      <View
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginBottom: '5%',
+        }}>
+        <Text>총 열량 : </Text>
+        <Progress.Bar
+          progress={
+            (energy.reduce((sum: any, now: any) => sum + now) +
+              personalEnergy.reduce((sum: any, now: any) => sum + now)) /
+            1550
+          }
+          width={width - 150}
+          height={20}
+          color={'rgba(0, 130, 80, 1)'}
+          style={{ marginLeft: '3%', marginRight: '3%' }}
+        />
+        <Image
+          source={
+            energy.reduce((sum: any, now: any) => sum + now) +
+              personalEnergy.reduce((sum: any, now: any) => sum + now) <
+            1550
+              ? require('../../Assets/Mission/pigGray.png')
+              : require('../../Assets/Mission/pig.png')
+          }
+          style={{ resizeMode: 'contain', width: 30, height: 30 }}
+        />
+      </View>
       <ScrollView>
+        {personalMission.map((data: any, idx: number) => {
+          return (
+            <Pressable
+              key={idx}
+              style={[styles.missionContainer, { backgroundColor: '#ACE1C8' }]}
+              onPress={() => {
+                setPersonalEnergy([
+                  ...personalEnergy.slice(0, idx + 1),
+                  ...personalEnergy.slice(idx + 2),
+                ]);
+                setPersonalMission([
+                  ...personalMission.slice(0, idx),
+                  ...personalMission.slice(idx + 1),
+                ]);
+              }}>
+              <Image
+                source={require('../../Assets/Mission/missionImg.png')}
+                style={styles.missionImage}
+              />
+              <Typography
+                value={data}
+                type="subtitle"
+                textStyle={styles.missionText}
+              />
+            </Pressable>
+          );
+        })}
         <View style={{ flexDirection: 'column' }}>
-          {handleMission('id1', '오이 먹기')}
-          {handleMission('id2', '고등어 조림 먹기')}
-          {handleMission('id3', '오렌지 반개 먹기')}
+          {handleMission(0, '오이 먹기', 30)}
+          {handleMission(1, '고등어 조림 먹기', 122)}
+          {handleMission(2, '오렌지 반개 먹기', 100)}
         </View>
         <View style={{ flexDirection: 'column' }}>
           {getModal()}
+          {energy.reduce((sum: any, now: any) => sum + now) +
+            personalEnergy.reduce((sum: any, now: any) => sum + now) >=
+          1550
+            ? Alert.alert('돼지경보')
+            : null}
           <Pressable
             style={[styles.missionContainer, { backgroundColor: '#D9D9D9' }]}
             onPress={() => setModalVisible(true)}>
@@ -169,12 +255,15 @@ const MissionParents = () => {
           </Pressable>
         </View>
       </ScrollView>
-
       <Pressable style={[styles.selectButton, { marginBottom: 30 }]}>
         <Typography
           value="미션 선택 완료"
           type="title"
-          textStyle={{ textDecorationLine: 'none' }}
+          textStyle={{
+            textDecorationLine: 'none',
+            color: 'white',
+            fontSize: 22,
+          }}
         />
       </Pressable>
     </SafeAreaView>
