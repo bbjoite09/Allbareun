@@ -12,10 +12,15 @@ import MissionList from './src/Pages/MissionList/MissionList';
 import MissionListDetail from './src/Pages/MissionList/MissionListDetail';
 import MyPage from './src/Pages/MyPage';
 import Report from './src/Pages/Report/Report';
+import SignIn from './src/Pages/SignIn';
+import SignUp from './src/Pages/SignUp';
 
 export type RootStackParamList = {
   MissionList: undefined;
   MissionListDetail: { day: object };
+  SignIn: undefined;
+  SignUp: undefined;
+  MyTabs: undefined;
 };
 
 const Tab = createBottomTabNavigator();
@@ -111,9 +116,19 @@ const Stack = createNativeStackNavigator();
 
 const AllStack = () => {
   return (
-    <Stack.Navigator initialRouteName="TabNavi">
+    <Stack.Navigator initialRouteName="SignIn">
       <Stack.Screen
-        name="TabNavi"
+        name="SignIn"
+        component={SignIn}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="SignUp"
+        component={SignUp}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="MyTabs"
         component={MyTabs}
         options={{ headerShown: false }}
       />
