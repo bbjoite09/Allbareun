@@ -4,7 +4,7 @@ import { Image, Pressable, StyleSheet, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RadioForm from 'react-native-simple-radio-button';
 import { RootStackParamList } from '../../App';
-import Typography from '../Components/Typography';
+import Typography from '../elements/Typography';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'SignUp'>;
 
@@ -87,7 +87,7 @@ const SignUp = ({ navigation }: Props) => {
   return (
     <SafeAreaView>
       <Image
-        source={require('../Assets/logoTop.png')}
+        source={require('../static/images/logoTop.png')}
         style={styles.logoStyle}
       />
       <View style={styles.container}>

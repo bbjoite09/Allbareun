@@ -1,23 +1,16 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { NavigationContainer } from '@react-navigation/native';
 import React from 'react';
-import {
-  Dimensions,
-  Image,
-  Pressable,
-  SafeAreaView,
-  StyleSheet,
-} from 'react-native';
+import { Dimensions, Image, SafeAreaView, StyleSheet } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { RootStackParamList } from '../../../App';
-import Typography from '../../Components/Typography';
+import Typography from '../../elements/Typography';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'MissionList'>;
 const MissionList = ({ navigation }: Props) => {
   return (
     <SafeAreaView style={styles.container}>
       <Image
-        source={require('../../Assets/logoTop.png')}
+        source={require('../../static/images/logoTop.png')}
         style={styles.logoStyle}
       />
       <Typography

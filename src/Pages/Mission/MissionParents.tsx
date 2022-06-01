@@ -15,8 +15,8 @@ import {
   Alert,
   TextInput,
 } from 'react-native';
-import Typography from '../../Components/Typography';
-import foodDB from '../../Data/foodList.json';
+import Typography from '../../elements/Typography';
+import foodDB from '../../static/datas/foodList.json';
 
 const { width } = Dimensions.get('screen');
 
@@ -68,7 +68,7 @@ const MissionParents = () => {
           addEnergy(id, kcal);
         }}>
         <Image
-          source={require('../../Assets/Mission/missionImg.png')}
+          source={require('../../static/images/Mission/missionImg.png')}
           style={styles.missionImage}
         />
         <Typography
@@ -158,7 +158,7 @@ const MissionParents = () => {
   return (
     <SafeAreaView style={styles.container}>
       <Image
-        source={require('../../Assets/logoTop.png')}
+        source={require('../../static/images/logoTop.png')}
         style={styles.logoStyle}
       />
       <Typography
@@ -196,8 +196,8 @@ const MissionParents = () => {
             energy.reduce((sum: any, now: any) => sum + now) +
               personalEnergy.reduce((sum: any, now: any) => sum + now) <
             1550
-              ? require('../../Assets/Mission/pigGray.png')
-              : require('../../Assets/Mission/pig.png')
+              ? require('../../static/images/Mission/pigGray.png')
+              : require('../../static/images/Mission/pig.png')
           }
           style={{ resizeMode: 'contain', width: 30, height: 30 }}
         />
@@ -219,7 +219,7 @@ const MissionParents = () => {
                 ]);
               }}>
               <Image
-                source={require('../../Assets/Mission/missionImg.png')}
+                source={require('../../static/images/Mission/missionImg.png')}
                 style={styles.missionImage}
               />
               <Typography
@@ -249,7 +249,7 @@ const MissionParents = () => {
             style={[styles.missionContainer, { backgroundColor: '#D9D9D9' }]}
             onPress={() => setModalVisible(true)}>
             <Image
-              source={require('../../Assets/Mission/plus.png')}
+              source={require('../../static/images/Mission/plus.png')}
               style={[
                 styles.missionImage,
                 {

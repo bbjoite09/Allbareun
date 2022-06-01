@@ -7,8 +7,8 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import { LineChart, BarChart } from 'react-native-chart-kit';
-import Typography from '../../Components/Typography';
+import { BarChart } from 'react-native-chart-kit';
+import Typography from '../../elements/Typography';
 import RadarChart from './RadarChart';
 
 const { width } = Dimensions.get('window');
@@ -29,7 +29,7 @@ const Report = () => {
   return (
     <SafeAreaView style={styles.container}>
       <Image
-        source={require('../../Assets/logoTopDetail.png')}
+        source={require('../../static/images/logoTopDetail.png')}
         style={styles.logoStyle}
       />
       <ScrollView>

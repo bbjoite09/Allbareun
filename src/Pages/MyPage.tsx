@@ -15,7 +15,7 @@ import {
   View,
 } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
-import Typography from '../Components/Typography';
+import Typography from '../elements/Typography';
 
 const { width, height } = Dimensions.get('screen');
 
@@ -58,14 +58,14 @@ const MyPage = () => {
   return (
     <SafeAreaView style={styles.container}>
       <Image
-        source={require('../Assets/logoTopDetail.png')}
+        source={require('../static/images/logoTopDetail.png')}
         style={styles.logoStyle}
       />
       <ScrollView style={{ height }}>
         {/* 어린이 프로필 정보 */}
         <View style={styles.profileContainer}>
           <Image
-            source={require('../Assets/MyPage/profileImg.jpeg')}
+            source={require('../static/images/MyPage/profileImg.jpeg')}
             style={styles.profileImage}
           />
           <View style={styles.profileText}>

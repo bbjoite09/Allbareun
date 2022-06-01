@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { Text } from 'react-native-svg';
 import { RootStackParamList } from '../../App';
-import Typography from '../Components/Typography';
+import Typography from '../elements/Typography';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'SignIn'>;
 
@@ -20,7 +20,7 @@ const SignIn = ({ navigation }: Props) => {
   return (
     <SafeAreaView>
       <Image
-        source={require('../Assets/logoTop.png')}
+        source={require('../static/images/logoTop.png')}
         style={styles.logoStyle}
       />
       <View style={styles.container}>

@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import Toast from 'react-native-simple-toast';
 import { RootStackParamList } from '../../../App';
-import Typography from '../../Components/Typography';
+import Typography from '../../elements/Typography';
 
 const { width } = Dimensions.get('screen');
 type Props = NativeStackScreenProps<RootStackParamList, 'MissionListDetail'>;
@@ -23,7 +23,7 @@ const MissionListDetail = ({ navigation, route }: Props) => {
     return (
       <View style={[styles.missionContainer]}>
         <Image
-          source={require('../../Assets/Mission/missionImg.png')}
+          source={require('../../static/images/Mission/missionImg.png')}
           style={styles.missionImage}
         />
         <Typography
@@ -38,7 +38,7 @@ const MissionListDetail = ({ navigation, route }: Props) => {
     <SafeAreaView style={styles.container}>
       <Pressable onPress={() => navigation.navigate('MissionList')}>
         <Image
-          source={require('../../Assets/logoTop.png')}
+          source={require('../../static/images/logoTop.png')}
           style={styles.logoStyle}
         />
       </Pressable>
