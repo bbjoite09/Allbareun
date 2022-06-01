@@ -1,24 +1,37 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
-import { Image, Pressable, StyleSheet, TextInput, View } from 'react-native';
+import {
+  Alert,
+  Image,
+  Pressable,
+  StyleSheet,
+  TextInput,
+  View,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RadioForm from 'react-native-simple-radio-button';
 import { RootStackParamList } from '../../App';
 import Typography from '../elements/Typography';
+import { service } from '../services';
+import { axiosSrc } from '../static/url/axiosSrc';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'SignUp'>;
 
 const SignUp = ({ navigation }: Props) => {
-  const radioProps = [
+  const typeProps = [
     { label: '보호자    ', value: 0 },
     { label: '어린이', value: 1 },
+  ];
+  const sexProps = [
+    { label: '여성    ', value: 0 },
+    { label: '남성      ', value: 1 },
   ];
   const [inputs, setInputs] = useState<any>({
     id: '',
     pw: '',
+    sex: 'F',
     name: '',
-    age: '',
-    type: 'parents',
+    type: 'parent',
   });
 
   const handleInput = (title: string, placeholder: string, key: string) => {
@@ -43,7 +56,13 @@ const SignUp = ({ navigation }: Props) => {
     );
   };
 
-  const handleRadio = (title: string, key: string) => {
+  const handleRadio = (
+    title: string,
+    props: any,
+    key: string,
+    value1: string,
+    value2: string,
+  ) => {
     return (
       <View
         style={[
@@ -64,16 +83,16 @@ const SignUp = ({ navigation }: Props) => {
           textStyle={{ lineHeight: 50, color: 'white' }}
         />
         <RadioForm
-          radio_props={radioProps}
+          radio_props={props}
           formHorizontal={true}
           initial={0}
           buttonColor={'#8CC751'}
           selectedButtonColor={'#8CC751'}
           onPress={value => {
             if (value == 0) {
-              setInputs({ ...inputs, [key]: 'parent' });
+              setInputs({ ...inputs, [key]: value1 });
             } else {
-              setInputs({ ...inputs, [key]: 'child' });
+              setInputs({ ...inputs, [key]: value2 });
             }
           }}
           style={{ paddingRight: 40 }}
@@ -81,8 +100,6 @@ const SignUp = ({ navigation }: Props) => {
       </View>
     );
   };
-
-  console.log(inputs);
 
   return (
     <SafeAreaView>
@@ -96,13 +113,24 @@ const SignUp = ({ navigation }: Props) => {
           {handleInput('아이디', '아이디', 'id')}
           {handleInput('비밀번호', '비밀번호', 'pw')}
           {handleInput('이름', '이름', 'name')}
-          {handleInput('나이', '나이', 'age')}
-          {handleRadio('가입유형', 'type')}
+          {handleRadio('성별', sexProps, 'sex', 'F', 'M')}
+          {handleRadio('가입유형', typeProps, 'type', 'parent', 'child')}
         </View>
         <Pressable
           style={[styles.selectButton, { marginBottom: 30 }]}
-          onPress={() => {
-            navigation.navigate('SignUp');
+          onPress={async () => {
+            const res = await service.user.signUp(
+              inputs.id,
+              inputs.pw,
+              inputs.name,
+              inputs.type,
+              inputs.sex,
+            );
+            if (res.success) {
+              navigation.navigate('SignIn');
+            } else {
+              Alert.alert('회원가입 실패!', '잠시후 다시 시도해 주세요.');
+            }
           }}>
           <Typography
             value="회원가입하기"

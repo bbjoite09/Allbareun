@@ -1,20 +1,21 @@
 import axios from 'axios';
+import { axiosSrc } from '../static/url/axiosSrc';
 
 class UserService {
-  signup = async (
+  signUp = async (
     user_id: string,
     user_password: string,
     name: string,
     user_type: string,
-    user_age: string,
+    user_sex: string,
   ) => {
     const data = await axios
-      .post('https://localhost:3000/api/users/register', {
+      .post(axiosSrc.signUp, {
         user_id,
         user_password,
-        user_age,
         name,
         user_type,
+        user_sex,
       })
       .then(response => {
         return response.data;
@@ -22,7 +23,7 @@ class UserService {
       .catch(error => {
         throw error;
       });
-    return await data;
+    return data;
   };
 }
 
