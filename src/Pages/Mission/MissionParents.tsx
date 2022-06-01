@@ -131,7 +131,12 @@ const MissionParents = () => {
                         setModalVisible(!modalVisible);
                       }}>
                       <View style={styles.modalList}>
-                        <Text style={styles.modalText}>{data.name}</Text>
+                        <Text style={[styles.modalText, { textAlign: 'left' }]}>
+                          {data.name}
+                        </Text>
+                        <Text style={styles.modalText}>
+                          {Math.round(data.energy)}kcal
+                        </Text>
                       </View>
                     </Pressable>
                   );
@@ -218,7 +223,7 @@ const MissionParents = () => {
                 style={styles.missionImage}
               />
               <Typography
-                value={data}
+                value={data + ' 먹기'}
                 type="subtitle"
                 textStyle={styles.missionText}
               />
@@ -235,7 +240,10 @@ const MissionParents = () => {
           {energy.reduce((sum: any, now: any) => sum + now) +
             personalEnergy.reduce((sum: any, now: any) => sum + now) >=
           1550
-            ? Alert.alert('돼지경보')
+            ? Alert.alert(
+                '꿀꿀~ 돼지경보🐽',
+                '체중관리를 위해 음식을 빼주세요!',
+              )
             : null}
           <Pressable
             style={[styles.missionContainer, { backgroundColor: '#D9D9D9' }]}
@@ -313,8 +321,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: '#BED0AB',
     height: 40,
-    justifyContent: 'center',
-    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    display: 'flex',
+    flexDirection: 'row',
   },
   modalText: {
     fontSize: 16,

@@ -7,21 +7,20 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import { LineChart } from 'react-native-chart-kit';
+import { LineChart, BarChart } from 'react-native-chart-kit';
 import Typography from '../../Components/Typography';
 import RadarChart from './RadarChart';
 
 const { width } = Dimensions.get('window');
 
 const Report = () => {
-  const dateList = [2021.12, 2022.01, 2022.02, 2022.03];
-  const acheiveCountList = [150, 130, 100, 140];
+  const dateList = [2021.12, 2022.01, 2022.02, 2022.03, 2022.04];
+  const acheiveCountList = [20, 15, 13, 17, 25];
   const data = {
     labels: dateList,
     datasets: [
       {
         data: acheiveCountList,
-        color: () => `#9CB96A`,
         strokeWidth: 2,
       },
     ],
@@ -54,21 +53,22 @@ const Report = () => {
           textStyle={{ textAlign: 'left', padding: 25 }}
         />
         <Typography
-          value="미션 지속 시간"
+          value="날짜별 미션 성공률"
           type="subtitle"
           containerStyle={styles.textStyle}
         />
-        <LineChart
+        <BarChart
           data={data}
-          width={width - 45}
+          width={width - 10}
           height={170}
+          withInnerLines={false}
           chartConfig={chartConfig}
           withVerticalLines={false}
           fromZero={true}
           style={styles.chartContainer}
         />
         <Typography
-          value="저번 달보다 미션 지속 시간이 증가하여 3시간 동안 미션을 수행하셨습니다. 다음 달에는 새로운 신기록을 도전해보세요!"
+          value={`저번 달보다 미션 성공률이 줄어들어 ${acheiveCountList[4]}개의 미션을 수행하셨습니다. 다음 달에는 새로운 신기록을 도전해보세요!`}
           textStyle={{ textAlign: 'left', padding: 25 }}
         />
       </ScrollView>
@@ -79,7 +79,9 @@ const Report = () => {
 const chartConfig = {
   backgroundGradientFrom: 'white',
   backgroundGradientTo: 'white',
-  color: () => `#333333`,
+  decimalPlaces: 0,
+  color: () => `#488F00`,
+  labelColor: () => `rgba(0, 0, 0, 1)`,
   barPercentage: 0.5,
   useShadowColorFromDataset: false, // optional
 };
@@ -105,7 +107,7 @@ const styles = StyleSheet.create({
   },
   nutriScoreGraph: {
     height: 35,
-    width: (width - 50) / 2,
+    width: (width - 50) * 0.8,
     backgroundColor: '#9CB96A',
     alignSelf: 'flex-start',
   },
@@ -121,7 +123,7 @@ const styles = StyleSheet.create({
   },
   chartContainer: {
     marginTop: 10,
-    alignSelf: 'center',
+    alignItems: 'center',
   },
 });
 export default Report;

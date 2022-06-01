@@ -45,7 +45,7 @@ const MyPage = () => {
     return (
       <LineChart
         data={data}
-        width={width - 45}
+        width={width - 25}
         height={170}
         chartConfig={chartConfig}
         withVerticalLines={false}
@@ -150,6 +150,7 @@ const chartConfig = {
   backgroundGradientFrom: 'white',
   backgroundGradientTo: 'white',
   color: (opacity = 1) => `black`,
+  decimalPlaces: 0,
   barPercentage: 0.5,
   useShadowColorFromDataset: false, // optional
 };
@@ -177,6 +178,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 35,
     alignItems: 'center',
+    justifyContent: 'space-evenly',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -185,6 +187,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+    width: '80%',
+    height: '50%',
   },
 
   modalButton: {
@@ -201,12 +205,13 @@ const styles = StyleSheet.create({
   },
   modalText: {
     marginBottom: 15,
-    fontSize: 15,
+    fontSize: 19,
     textAlign: 'center',
   },
   modalInputContainer: { alignSelf: 'flex-start' },
   modalInput: {
-    marginBottom: 15,
+    marginBottom: 20,
+    fontSize: 16,
   },
   profileContainer: {
     flexDirection: 'row',
@@ -265,7 +270,7 @@ const styles = StyleSheet.create({
   },
   chartContainer: {
     marginTop: 10,
-    marginLeft: -10,
+    marginLeft: -30,
     marginBottom: 10,
   },
 });
