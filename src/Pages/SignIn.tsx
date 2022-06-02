@@ -19,6 +19,31 @@ type Props = NativeStackScreenProps<RootStackParamList, 'SignIn'>;
 const SignIn = ({ navigation }: Props) => {
   const [inputs, setInputs] = useState<any>({ id: '', pw: '' });
 
+  const handleOnSignIn = async () => {
+    const res = await service.user.signIn(inputs.id, inputs.pw);
+
+    if (res.loginSuccess && res.pairing) {
+      // 어린이 - 보호자 유형 구분 후 네비게이션 이동
+      if (res.user_type == 'parent') {
+        navigation.navigate('ParentTab');
+      } else {
+        navigation.navigate('ChildTab');
+      }
+    } else if (res.loginSuccess && !res.paring) {
+      navigation.navigate('Pairing');
+    } else {
+      Alert.alert('로그인 실패', res.message ? res.message : null);
+    }
+  };
+
+  const handleEnterEvent = () => {
+    if (inputs.id && inputs.pw) {
+      handleOnSignIn();
+    } else {
+      Alert.alert('경고', '모든 값을 입력해주세요');
+    }
+  };
+
   return (
     <SafeAreaView>
       <Image
@@ -45,6 +70,7 @@ const SignIn = ({ navigation }: Props) => {
               autoFocus={true}
               style={styles.inputText}
               onChangeText={e => setInputs({ ...inputs, ['id']: e })}
+              onSubmitEditing={() => handleEnterEvent()}
             />
           </View>
           <View style={styles.rowContainer}>
@@ -65,6 +91,7 @@ const SignIn = ({ navigation }: Props) => {
               style={styles.inputText}
               textContentType={'password'}
               onChangeText={e => setInputs({ ...inputs, ['pw']: e })}
+              onSubmitEditing={() => handleEnterEvent()}
             />
           </View>
         </View>
@@ -79,21 +106,8 @@ const SignIn = ({ navigation }: Props) => {
               left: Dimensions.get('window').width / 2 - 124,
             },
           ]}
-          onPress={async () => {
-            const res = await service.user.signIn(inputs.id, inputs.pw);
-
-            if (res.loginSuccess && res.pairing) {
-              // 어린이 - 보호자 유형 구분 후 네비게이션 이동
-              if (res.user_type == 'parent') {
-                navigation.navigate('ParentTab');
-              } else {
-                navigation.navigate('ChildTab');
-              }
-            } else if (!res.paring) {
-              navigation.navigate('Pairing');
-            } else {
-              Alert.alert('로그인 실패', res.message ? res.message : null);
-            }
+          onPress={() => {
+            handleOnSignIn();
           }}>
           <Typography
             value="로그인하기"

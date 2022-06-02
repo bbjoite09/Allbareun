@@ -34,6 +34,29 @@ const SignUp = ({ navigation }: Props) => {
     type: 'parent',
   });
 
+  const handleOnSignUp = async () => {
+    const res = await service.user.signUp(
+      inputs.id,
+      inputs.pw,
+      inputs.name,
+      inputs.type,
+      inputs.sex,
+    );
+    if (res.success) {
+      navigation.navigate('SignIn');
+    } else {
+      Alert.alert('회원가입 실패!', '잠시후 다시 시도해 주세요.');
+    }
+  };
+
+  const handleEnterEvent = () => {
+    if (inputs.id && inputs.pw && inputs.sex && inputs.name && inputs.type) {
+      handleOnSignUp();
+    } else {
+      Alert.alert('경고', '모든 값을 입력해주세요');
+    }
+  };
+
   const handleInput = (title: string, placeholder: string, key: string) => {
     return (
       <View style={[styles.rowContainer, { marginBottom: '5%' }]}>
@@ -52,6 +75,7 @@ const SignUp = ({ navigation }: Props) => {
           style={styles.inputText}
           autoCapitalize="none"
           onChangeText={e => setInputs({ ...inputs, [key]: e })}
+          onSubmitEditing={() => handleEnterEvent()}
         />
       </View>
     );
@@ -134,20 +158,7 @@ const SignUp = ({ navigation }: Props) => {
             styles.selectButton,
             { marginTop: Platform.OS == 'ios' ? 40 : 20 },
           ]}
-          onPress={async () => {
-            const res = await service.user.signUp(
-              inputs.id,
-              inputs.pw,
-              inputs.name,
-              inputs.type,
-              inputs.sex,
-            );
-            if (res.success) {
-              navigation.navigate('SignIn');
-            } else {
-              Alert.alert('회원가입 실패!', '잠시후 다시 시도해 주세요.');
-            }
-          }}>
+          onPress={async () => handleOnSignUp()}>
           <Typography
             value="회원가입하기"
             type="title"

@@ -20,6 +20,27 @@ const Pairing = ({ navigation }: Props) => {
   const [inputs, setInputs] = useState<any>({
     id: '',
   });
+
+  const handleOnPress = async () => {
+    const res = await service.user.pairing(inputs.id);
+    if (res.success) {
+      if (res.user_type == 'parent') {
+        navigation.navigate('ParentTab');
+      } else {
+        navigation.navigate('ChildTab');
+      }
+    } else {
+      Alert.alert('페어링 실패', res.message ? res.message : null);
+    }
+  };
+  const handleEnterEvent = () => {
+    if (inputs.id) {
+      handleOnPress();
+    } else {
+      Alert.alert('경고', '모든 값을 입력해주세요');
+    }
+  };
+
   return (
     <SafeAreaView>
       <Pressable
@@ -75,23 +96,13 @@ const Pairing = ({ navigation }: Props) => {
               style={styles.inputText}
               autoCapitalize="none"
               onChangeText={e => setInputs({ ...inputs, ['id']: e })}
+              onSubmitEditing={() => handleEnterEvent()}
             />
           </View>
         </View>
         <Pressable
           style={styles.selectButton}
-          onPress={async () => {
-            const res = await service.user.pairing(inputs.id);
-            if (res.success) {
-              if (res.user_type == 'parent') {
-                navigation.navigate('ParentTab');
-              } else {
-                navigation.navigate('ChildTab');
-              }
-            } else {
-              Alert.alert('페어링 실패', res.message ? res.message : null);
-            }
-          }}>
+          onPress={async () => handleOnPress()}>
           <Typography
             value="계정 연동하기"
             type="title"
