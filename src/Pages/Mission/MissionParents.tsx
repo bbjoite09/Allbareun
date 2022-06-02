@@ -15,8 +15,8 @@ import {
   Alert,
   TextInput,
 } from 'react-native';
-import Typography from '../../Components/Typography';
-import foodDB from '../../Data/foodList.json';
+import Typography from '../../elements/Typography';
+import foodDB from '../../static/datas/foodList.json';
 
 const { width } = Dimensions.get('screen');
 
@@ -68,7 +68,7 @@ const MissionParents = () => {
           addEnergy(id, kcal);
         }}>
         <Image
-          source={require('../../Assets/Mission/missionImg.png')}
+          source={require('../../static/images/Mission/missionImg.png')}
           style={styles.missionImage}
         />
         <Typography
@@ -131,7 +131,12 @@ const MissionParents = () => {
                         setModalVisible(!modalVisible);
                       }}>
                       <View style={styles.modalList}>
-                        <Text style={styles.modalText}>{data.name}</Text>
+                        <Text style={[styles.modalText, { textAlign: 'left' }]}>
+                          {data.name}
+                        </Text>
+                        <Text style={styles.modalText}>
+                          {Math.round(data.energy)}kcal
+                        </Text>
                       </View>
                     </Pressable>
                   );
@@ -153,7 +158,7 @@ const MissionParents = () => {
   return (
     <SafeAreaView style={styles.container}>
       <Image
-        source={require('../../Assets/logoTop.png')}
+        source={require('../../static/images/logoTop.png')}
         style={styles.logoStyle}
       />
       <Typography
@@ -191,8 +196,8 @@ const MissionParents = () => {
             energy.reduce((sum: any, now: any) => sum + now) +
               personalEnergy.reduce((sum: any, now: any) => sum + now) <
             1550
-              ? require('../../Assets/Mission/pigGray.png')
-              : require('../../Assets/Mission/pig.png')
+              ? require('../../static/images/Mission/pigGray.png')
+              : require('../../static/images/Mission/pig.png')
           }
           style={{ resizeMode: 'contain', width: 30, height: 30 }}
         />
@@ -214,11 +219,11 @@ const MissionParents = () => {
                 ]);
               }}>
               <Image
-                source={require('../../Assets/Mission/missionImg.png')}
+                source={require('../../static/images/Mission/missionImg.png')}
                 style={styles.missionImage}
               />
               <Typography
-                value={data}
+                value={data + ' 먹기'}
                 type="subtitle"
                 textStyle={styles.missionText}
               />
@@ -235,13 +240,16 @@ const MissionParents = () => {
           {energy.reduce((sum: any, now: any) => sum + now) +
             personalEnergy.reduce((sum: any, now: any) => sum + now) >=
           1550
-            ? Alert.alert('돼지경보')
+            ? Alert.alert(
+                '꿀꿀~ 돼지경보🐽',
+                '체중관리를 위해 음식을 빼주세요!',
+              )
             : null}
           <Pressable
             style={[styles.missionContainer, { backgroundColor: '#D9D9D9' }]}
             onPress={() => setModalVisible(true)}>
             <Image
-              source={require('../../Assets/Mission/plus.png')}
+              source={require('../../static/images/Mission/plus.png')}
               style={[
                 styles.missionImage,
                 {
@@ -313,8 +321,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: '#BED0AB',
     height: 40,
-    justifyContent: 'center',
-    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    display: 'flex',
+    flexDirection: 'row',
   },
   modalText: {
     fontSize: 16,

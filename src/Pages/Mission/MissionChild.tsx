@@ -9,7 +9,7 @@ import {
   View,
 } from 'react-native';
 import Toast from 'react-native-simple-toast';
-import Typography from '../../Components/Typography';
+import Typography from '../../elements/Typography';
 
 const { width } = Dimensions.get('screen');
 
@@ -43,7 +43,7 @@ const MissionChild = () => {
           { backgroundColor: `${isSelect[id] ? '#E4E4E4' : '#EDFF80'}` },
         ]}>
         <Image
-          source={require('../../Assets/Mission/missionImg.png')}
+          source={require('../../static/images/Mission/missionImg.png')}
           style={styles.missionImage}
         />
         <Typography
@@ -88,7 +88,7 @@ const MissionChild = () => {
   return (
     <SafeAreaView style={styles.container}>
       <Image
-        source={require('../../Assets/logoTop.png')}
+        source={require('../../static/images/logoTop.png')}
         style={styles.logoStyle}
       />
       <Typography

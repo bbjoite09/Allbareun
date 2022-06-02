@@ -6,16 +6,23 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
 import { Image, StyleSheet } from 'react-native';
-import Typography from './src/Components/Typography';
-import MissionParents from './src/Pages/Mission/MissionParents';
-import MissionList from './src/Pages/MissionList/MissionList';
-import MissionListDetail from './src/Pages/MissionList/MissionListDetail';
-import MyPage from './src/Pages/MyPage';
-import Report from './src/Pages/Report/Report';
+import Typography from './src/elements/Typography';
+import MissionParents from './src/pages/Mission/MissionParents';
+import MissionList from './src/pages/MissionList/MissionList';
+import MissionListDetail from './src/pages/MissionList/MissionListDetail';
+import MyPage from './src/pages/MyPage';
+import Pairing from './src/pages/Pairing';
+import Report from './src/pages/Report/Report';
+import SignIn from './src/pages/SignIn';
+import SignUp from './src/pages/SignUp';
 
 export type RootStackParamList = {
   MissionList: undefined;
   MissionListDetail: { day: object };
+  SignIn: undefined;
+  SignUp: undefined;
+  MyTabs: undefined;
+  Pairing: undefined;
 };
 
 const Tab = createBottomTabNavigator();
@@ -32,12 +39,12 @@ function MyTabs() {
           tabBarIcon: ({ focused }) =>
             !focused ? (
               <Image
-                source={require('./src/Assets/Navigation/ic_mission.png')}
+                source={require('./src/static/images/Navigation/ic_mission.png')}
                 style={styles.iconStyle}
               />
             ) : (
               <Image
-                source={require('./src/Assets/Navigation/ic_missionSelected.png')}
+                source={require('./src/static/images/Navigation/ic_missionSelected.png')}
                 style={styles.iconStyle}
               />
             ),
@@ -52,12 +59,12 @@ function MyTabs() {
           tabBarIcon: ({ focused }) =>
             !focused ? (
               <Image
-                source={require('./src/Assets/Navigation/ic_missionList.png')}
+                source={require('./src/static/images/Navigation/ic_missionList.png')}
                 style={styles.iconStyle}
               />
             ) : (
               <Image
-                source={require('./src/Assets/Navigation/ic_missionListSelected.png')}
+                source={require('./src/static/images/Navigation/ic_missionListSelected.png')}
                 style={styles.iconStyle}
               />
             ),
@@ -72,12 +79,12 @@ function MyTabs() {
           tabBarIcon: ({ focused }) =>
             !focused ? (
               <Image
-                source={require('./src/Assets/Navigation/ic_report.png')}
+                source={require('./src/static/images/Navigation/ic_report.png')}
                 style={styles.iconStyle}
               />
             ) : (
               <Image
-                source={require('./src/Assets/Navigation/ic_reportSelected.png')}
+                source={require('./src/static/images/Navigation/ic_reportSelected.png')}
                 style={styles.iconStyle}
               />
             ),
@@ -92,12 +99,12 @@ function MyTabs() {
           tabBarIcon: ({ focused }) =>
             !focused ? (
               <Image
-                source={require('./src/Assets/Navigation/ic_myPage.png')}
+                source={require('./src/static/images/Navigation/ic_myPage.png')}
                 style={styles.iconStyle}
               />
             ) : (
               <Image
-                source={require('./src/Assets/Navigation/ic_myPageSelected.png')}
+                source={require('./src/static/images/Navigation/ic_myPageSelected.png')}
                 style={styles.iconStyle}
               />
             ),
@@ -111,9 +118,24 @@ const Stack = createNativeStackNavigator();
 
 const AllStack = () => {
   return (
-    <Stack.Navigator initialRouteName="TabNavi">
+    <Stack.Navigator initialRouteName="SignIn">
       <Stack.Screen
-        name="TabNavi"
+        name="SignIn"
+        component={SignIn}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Pairing"
+        component={Pairing}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="SignUp"
+        component={SignUp}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="MyTabs"
         component={MyTabs}
         options={{ headerShown: false }}
       />
