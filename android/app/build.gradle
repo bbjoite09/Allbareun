@@ -168,6 +168,10 @@ android {
             signingConfig signingConfigs.debug
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+        } 
+        releaseStaging {
+        initWith release
+        matchingFallbacks = ['release']
         }
     }
 
@@ -225,3 +229,10 @@ task copyDownloadableDepsToLibs(type: Copy) {
 }
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
+
+project.ext.envConfigFiles = [
+        debug: ".env",
+        releasestaging: ".env.staging",
+        release: ".env.production"
+]
+apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"

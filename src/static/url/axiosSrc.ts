@@ -1,4 +1,8 @@
-const baseUrl = 'http://localhost:3000/api';
+import { Config } from 'react-native-config';
+
+const IP = Config.IP;
+const baseUrl = `http://${IP}/api`;
+
 export const url = {
   usersSrc: baseUrl + '/users',
 };
