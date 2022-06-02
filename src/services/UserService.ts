@@ -54,6 +54,10 @@ class UserService {
       });
     return data;
   };
+
+  getAuth = async () => {
+    await axios.get(axiosSrc.auth).then(res => console.log(res.data));
+  };
 }
 
 export default UserService;

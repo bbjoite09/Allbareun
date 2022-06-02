@@ -48,7 +48,6 @@ const MissionParents = () => {
       setEnergy([...energy.slice(0, id + 1), 0, ...energy.slice(id + 2)]);
     } else {
       setEnergy([...energy.slice(0, id + 1), kcal, ...energy.slice(id + 2)]);
-      console.log(energy);
     }
   };
 
