@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import {
+  Alert,
   Dimensions,
   Image,
   Keyboard,
@@ -16,13 +17,17 @@ import {
 } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 import Typography from '../elements/Typography';
+import { service } from '../services';
 
 const { width, height } = Dimensions.get('screen');
 
 const MyPage = () => {
   const [modalVisible, setModalVisible] = useState(false);
-  const [isComplete, setComplete] = useState(false); // height, weight 작성 여부 for enter event
-  const [inputs, setInputs] = useState<any>({ height: '', weight: '' });
+  const [inputs, setInputs] = useState<any>({
+    height: 0,
+    weight: 0,
+    age: 0,
+  });
   const date = new Date();
   const dateList = ['01/01', '01/21', '02/14', '02/31'];
   const weightList = [35, 34.3, 34.5, 34.5];
@@ -30,12 +35,18 @@ const MyPage = () => {
 
   const getGraph = (type: string, growList: Array<number>) => {
     const data = {
-      labels: !isComplete
-        ? dateList
-        : [...dateList, `${date.getMonth() + 1}/${date.getDate()}`],
+      labels:
+        inputs.height > 0
+          ? dateList
+          : [
+              ...dateList,
+              `${('00' + (date.getMonth() + 1).toString()).slice(-2)}/${(
+                '00' + date.getDate().toString()
+              ).slice(-2)}`,
+            ],
       datasets: [
         {
-          data: !isComplete ? growList : [...growList, inputs[type]],
+          data: inputs.height > 0 ? growList : [...growList, inputs[type]],
           color: () => `#9CB96A`,
           strokeWidth: 2,
         },
@@ -52,6 +63,50 @@ const MyPage = () => {
         style={styles.chartContainer}
         withShadow={false}
       />
+    );
+  };
+
+  console.log(typeof inputs.weight, typeof inputs.height, typeof inputs.age);
+
+  const handleEnroll = async () => {
+    console.log();
+  };
+
+  const handleInput = (
+    title: string,
+    placeholder: string,
+    key: string,
+    autoFocuse?: boolean,
+  ) => {
+    return (
+      <View style={[styles.rowContainer, { marginBottom: '5%' }]}>
+        <Typography
+          value={title}
+          type="subtitle"
+          containerStyle={{
+            width: '30%',
+            height: 35,
+            backgroundColor: '#8CC751',
+          }}
+          textStyle={{ lineHeight: 35, color: 'white' }}
+        />
+        <TextInput
+          placeholder={placeholder + '을(를) 입력해주세요.'}
+          style={styles.inputText}
+          keyboardType={'numeric'}
+          autoFocus={autoFocuse ? autoFocuse : false}
+          autoCapitalize="none"
+          onChangeText={e => setInputs({ ...inputs, [key]: Number(e) })}
+          onSubmitEditing={() => {
+            if (inputs.height > 0) {
+              handleEnroll();
+              setModalVisible(false);
+            } else {
+              Alert.alert('경고', '모든 값을 입력해주세요');
+            }
+          }}
+        />
+      </View>
     );
   };
 
@@ -112,29 +167,15 @@ const MyPage = () => {
                 textStyle={styles.modalText}
               />
               <View style={styles.modalInputContainer}>
-                <TextInput
-                  placeholder="키를 입력해주세요"
-                  keyboardType="numeric"
-                  autoFocus={true}
-                  style={styles.modalInput}
-                  onChangeText={e => setInputs({ ...inputs, ['height']: e })}
-                />
-                <TextInput
-                  placeholder="몸무게를 입력해주세요"
-                  keyboardType="numeric"
-                  style={styles.modalInput}
-                  onChangeText={e => setInputs({ ...inputs, ['weight']: e })}
-                  onSubmitEditing={() => {
-                    setModalVisible(!modalVisible);
-                    setComplete(true);
-                  }}
-                />
+                {handleInput('키', '키', 'height', true)}
+                {handleInput('몸무게', '몸무게', 'weight')}
+                {handleInput('나이', '나이', 'age')}
               </View>
               <Pressable
                 style={styles.modalButton}
-                onPress={() => {
+                onPress={async () => {
+                  handleEnroll();
                   setModalVisible(!modalVisible);
-                  setComplete(true);
                 }}>
                 <Text style={styles.textStyle}>등록</Text>
               </Pressable>
@@ -192,11 +233,11 @@ const styles = StyleSheet.create({
   },
 
   modalButton: {
-    width: 55,
+    width: 150,
     borderRadius: 20,
     padding: 10,
     elevation: 2,
-    backgroundColor: '#9CB96A',
+    backgroundColor: '#8CC751',
   },
   textStyle: {
     color: 'white',
@@ -212,6 +253,20 @@ const styles = StyleSheet.create({
   modalInput: {
     marginBottom: 20,
     fontSize: 16,
+  },
+
+  rowContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#8CC751',
+  },
+  inputText: {
+    width: '70%',
+    height: 35,
+    fontSize: 15,
+    paddingLeft: '5%',
   },
   profileContainer: {
     flexDirection: 'row',
