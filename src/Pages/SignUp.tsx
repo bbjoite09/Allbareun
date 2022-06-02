@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import {
   Alert,
   Image,
+  Platform,
   Pressable,
   StyleSheet,
   TextInput,
@@ -13,7 +14,6 @@ import RadioForm from 'react-native-simple-radio-button';
 import { RootStackParamList } from '../../App';
 import Typography from '../elements/Typography';
 import { service } from '../services';
-import { axiosSrc } from '../static/url/axiosSrc';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'SignUp'>;
 
@@ -36,7 +36,7 @@ const SignUp = ({ navigation }: Props) => {
 
   const handleInput = (title: string, placeholder: string, key: string) => {
     return (
-      <View style={[styles.rowContainer, { marginBottom: '3%' }]}>
+      <View style={[styles.rowContainer, { marginBottom: '5%' }]}>
         <Typography
           value={title}
           type="subtitle"
@@ -50,6 +50,7 @@ const SignUp = ({ navigation }: Props) => {
         <TextInput
           placeholder={placeholder + '을(를) 입력해주세요.'}
           style={styles.inputText}
+          autoCapitalize="none"
           onChangeText={e => setInputs({ ...inputs, [key]: e })}
         />
       </View>
@@ -68,7 +69,7 @@ const SignUp = ({ navigation }: Props) => {
         style={[
           styles.rowContainer,
           {
-            marginBottom: '3%',
+            marginBottom: '5%',
             justifyContent: 'space-between',
           },
         ]}>
@@ -103,12 +104,24 @@ const SignUp = ({ navigation }: Props) => {
 
   return (
     <SafeAreaView>
-      <Image
-        source={require('../static/images/logoTop.png')}
-        style={styles.logoStyle}
+      <Pressable
+        onPress={() => {
+          navigation.navigate('SignIn');
+        }}>
+        <Image
+          source={require('../static/images/logoTop.png')}
+          style={styles.logoStyle}
+        />
+      </Pressable>
+      <Typography
+        value="회원가입"
+        type="title"
+        containerStyle={{
+          marginTop: Platform.OS == 'ios' ? '15%' : '7%',
+          marginBottom: Platform.OS == 'ios' ? '10%' : '8%',
+        }}
       />
       <View style={styles.container}>
-        <Typography value="회원가입" type="title" />
         <View>
           {handleInput('아이디', '아이디', 'id')}
           {handleInput('비밀번호', '비밀번호', 'pw')}
@@ -117,7 +130,10 @@ const SignUp = ({ navigation }: Props) => {
           {handleRadio('가입유형', typeProps, 'type', 'parent', 'child')}
         </View>
         <Pressable
-          style={[styles.selectButton, { marginBottom: 30 }]}
+          style={[
+            styles.selectButton,
+            { marginTop: Platform.OS == 'ios' ? 40 : 20 },
+          ]}
           onPress={async () => {
             const res = await service.user.signUp(
               inputs.id,
@@ -150,12 +166,11 @@ const SignUp = ({ navigation }: Props) => {
 const styles = StyleSheet.create({
   logoStyle: {
     width: '100%',
-    height: 105,
+    height: 110,
   },
   container: {
     display: 'flex',
-    height: '75%',
-    justifyContent: 'space-around',
+    height: '83%',
     alignItems: 'center',
   },
   rowContainer: {
@@ -166,7 +181,7 @@ const styles = StyleSheet.create({
     borderColor: '#8CC751',
   },
   inputText: {
-    width: '60%',
+    width: '57%',
     height: 50,
     fontSize: 15,
     paddingLeft: '5%',

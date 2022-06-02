@@ -25,6 +25,35 @@ class UserService {
       });
     return data;
   };
+
+  signIn = async (user_id: string, user_password: string) => {
+    const data = await axios
+      .post(axiosSrc.signIn, {
+        user_id,
+        user_password,
+      })
+      .then(response => {
+        return response.data;
+      })
+      .catch(error => {
+        throw error;
+      });
+    return data;
+  };
+
+  pairing = async (user_id: string) => {
+    const data = await axios
+      .patch(axiosSrc.pairing, {
+        user_id,
+      })
+      .then(response => {
+        return response.data;
+      })
+      .catch(error => {
+        throw error;
+      });
+    return data;
+  };
 }
 
 export default UserService;

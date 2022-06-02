@@ -10,5 +10,5 @@ export const url = {
 export const axiosSrc = {
   signUp: url.usersSrc + '/register',
   signIn: url.usersSrc + '/login',
-  partner: url.usersSrc + '/partner',
+  pairing: url.usersSrc + '/partner',
 };

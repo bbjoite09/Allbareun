@@ -11,6 +11,7 @@ import MissionParents from './src/pages/Mission/MissionParents';
 import MissionList from './src/pages/MissionList/MissionList';
 import MissionListDetail from './src/pages/MissionList/MissionListDetail';
 import MyPage from './src/pages/MyPage';
+import Pairing from './src/pages/Pairing';
 import Report from './src/pages/Report/Report';
 import SignIn from './src/pages/SignIn';
 import SignUp from './src/pages/SignUp';
@@ -21,6 +22,7 @@ export type RootStackParamList = {
   SignIn: undefined;
   SignUp: undefined;
   MyTabs: undefined;
+  Pairing: undefined;
 };
 
 const Tab = createBottomTabNavigator();
@@ -120,6 +122,11 @@ const AllStack = () => {
       <Stack.Screen
         name="SignIn"
         component={SignIn}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Pairing"
+        component={Pairing}
         options={{ headerShown: false }}
       />
       <Stack.Screen
