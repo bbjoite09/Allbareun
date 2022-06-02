@@ -83,8 +83,11 @@ const Pairing = ({ navigation }: Props) => {
           onPress={async () => {
             const res = await service.user.pairing(inputs.id);
             if (res.success) {
-              // 부모, 아이 유형에 따라 이동
-              navigation.navigate('MyTabs');
+              if (res.user_type == 'parent') {
+                navigation.navigate('ParentTab');
+              } else {
+                navigation.navigate('ChildTab');
+              }
             } else {
               Alert.alert('페어링 실패', res.message ? res.message : null);
             }

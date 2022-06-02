@@ -81,13 +81,16 @@ const SignIn = ({ navigation }: Props) => {
           ]}
           onPress={async () => {
             const res = await service.user.signIn(inputs.id, inputs.pw);
-            if (res.loginSuccess) {
-              if (res.pairing) {
-                // 어린이 - 보호자 유형 구분 후 네비게이션 이동
-                navigation.navigate('MyTabs');
+
+            if (res.loginSuccess && res.pairing) {
+              // 어린이 - 보호자 유형 구분 후 네비게이션 이동
+              if (res.user_type == 'parent') {
+                navigation.navigate('ParentTab');
               } else {
-                navigation.navigate('Pairing');
+                navigation.navigate('ChildTab');
               }
+            } else if (!res.paring) {
+              navigation.navigate('Pairing');
             } else {
               Alert.alert('로그인 실패', res.message ? res.message : null);
             }
