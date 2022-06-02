@@ -8,8 +8,6 @@ class FoodService {
         name,
       })
       .then(response => {
-        console.log(response.data.success, response.data.result.name);
-
         return response.data;
       })
       .catch(error => {

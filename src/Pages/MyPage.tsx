@@ -27,6 +27,7 @@ const MyPage = () => {
     height: 0,
     weight: 0,
     age: 0,
+    activeKcal: 0,
   });
   const date = new Date();
   const dateList = ['01/01', '01/21', '02/14', '02/31'];
@@ -36,7 +37,7 @@ const MyPage = () => {
   const getGraph = (type: string, growList: Array<number>) => {
     const data = {
       labels:
-        inputs.height > 0
+        inputs.height == 0 && inputs.weight == 0 && inputs.age == 0
           ? dateList
           : [
               ...dateList,
@@ -46,7 +47,7 @@ const MyPage = () => {
             ],
       datasets: [
         {
-          data: inputs.height > 0 ? growList : [...growList, inputs[type]],
+          data: inputs.height ? growList : [...growList, inputs[type]],
           color: () => `#9CB96A`,
           strokeWidth: 2,
         },
@@ -66,18 +67,16 @@ const MyPage = () => {
     );
   };
 
-  console.log(typeof inputs.weight, typeof inputs.height, typeof inputs.age);
-
   const handleEnroll = async () => {
-    console.log();
+    await service.health.setBodyData(
+      inputs.weight,
+      inputs.height,
+      inputs.age,
+      inputs.activeKcal,
+    );
   };
 
-  const handleInput = (
-    title: string,
-    placeholder: string,
-    key: string,
-    autoFocuse?: boolean,
-  ) => {
+  const handleInput = (title: string, key: string, autoFocuse?: boolean) => {
     return (
       <View style={[styles.rowContainer, { marginBottom: '5%' }]}>
         <Typography
@@ -91,14 +90,14 @@ const MyPage = () => {
           textStyle={{ lineHeight: 35, color: 'white' }}
         />
         <TextInput
-          placeholder={placeholder + '을(를) 입력해주세요.'}
+          placeholder={title + '을(를) 입력해주세요.'}
           style={styles.inputText}
           keyboardType={'numeric'}
           autoFocus={autoFocuse ? autoFocuse : false}
           autoCapitalize="none"
           onChangeText={e => setInputs({ ...inputs, [key]: Number(e) })}
           onSubmitEditing={() => {
-            if (inputs.height > 0) {
+            if (inputs.height > 0 && inputs.weight > 0 && inputs.age) {
               handleEnroll();
               setModalVisible(false);
             } else {
@@ -167,9 +166,10 @@ const MyPage = () => {
                 textStyle={styles.modalText}
               />
               <View style={styles.modalInputContainer}>
-                {handleInput('키', '키', 'height', true)}
-                {handleInput('몸무게', '몸무게', 'weight')}
-                {handleInput('나이', '나이', 'age')}
+                {handleInput('키', 'height', true)}
+                {handleInput('몸무게', 'weight')}
+                {handleInput('나이', 'age')}
+                {handleInput('활동량', 'activeKcal')}
               </View>
               <Pressable
                 style={styles.modalButton}
