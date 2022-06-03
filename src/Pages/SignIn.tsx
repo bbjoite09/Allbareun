@@ -10,26 +10,48 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import { useDispatch } from 'react-redux';
 import { RootStackParamList } from '../../App';
 import Typography from '../elements/Typography';
+import { setUserData, setUserId } from '../redux/modules/userInfo';
 import { service } from '../services';
+import { axiosSrc } from '../static/url/axiosSrc';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'SignIn'>;
 
 const SignIn = ({ navigation }: Props) => {
   const [inputs, setInputs] = useState<any>({ id: '', pw: '' });
+  const dispatch = useDispatch();
+
+  const setUserInfo = async (id: string) => {
+    const userInfo = await service.health.getBodyData(
+      axiosSrc.health + '/' + id,
+    );
+    const userInfoData = userInfo.data;
+
+    dispatch(
+      setUserData(
+        userInfoData.user.name,
+        userInfoData.user.user_sex,
+        userInfoData.bodyinfo.length == 0 ? '❌' : userInfoData.bodyinfo[0].bmi,
+      ),
+    );
+    dispatch(setUserId(inputs.id));
+  };
 
   const handleOnSignIn = async () => {
     const res = await service.user.signIn(inputs.id, inputs.pw);
-
     if (res.loginSuccess && res.pairing) {
       // 어린이 - 보호자 유형 구분 후 네비게이션 이동
       if (res.user_type == 'parent') {
+        setUserInfo(res.partner);
         navigation.navigate('ParentTab');
       } else {
+        setUserInfo(inputs.id);
         navigation.navigate('ChildTab');
       }
     } else if (res.loginSuccess && !res.paring) {
+      dispatch(setUserId(inputs.id));
       navigation.navigate('Pairing');
     } else {
       Alert.alert('로그인 실패', res.message ? res.message : null);

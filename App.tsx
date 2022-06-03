@@ -4,6 +4,8 @@
 import { NavigationContainer } from '@react-navigation/native';
 import * as React from 'react';
 import AllStack from './src/navigation/AllStack';
+import { Provider } from 'react-redux';
+import store from './src/redux/store';
 
 export type RootStackParamList = {
   MissionList: undefined;
@@ -17,9 +19,11 @@ export type RootStackParamList = {
 
 const App = () => {
   return (
-    <NavigationContainer>
-      <AllStack />
-    </NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer>
+        <AllStack />
+      </NavigationContainer>
+    </Provider>
   );
 };
 

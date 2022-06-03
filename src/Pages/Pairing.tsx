@@ -10,9 +10,13 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootStackParamList } from '../../App';
 import Typography from '../elements/Typography';
+import { setUserData, setUserId } from '../redux/modules/userInfo';
+import { RootState } from '../redux/store';
 import { service } from '../services';
+import { axiosSrc } from '../static/url/axiosSrc';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Pairing'>;
 
@@ -21,12 +25,27 @@ const Pairing = ({ navigation }: Props) => {
     id: '',
   });
 
+  const { user } = useSelector((state: RootState) => state);
+  const dispatch = useDispatch();
+
+  const setUserInfo = async (id: string) => {
+    const axiosUrl = axiosSrc.health + '/' + id;
+    const userInfo = await service.health.getBodyData(axiosUrl);
+    const userInfoData = userInfo.data;
+
+    dispatch(setUserData(userInfoData.user.name, userInfoData.user.user_sex));
+  };
+
   const handleOnPress = async () => {
     const res = await service.user.pairing(inputs.id);
     if (res.success) {
       if (res.user_type == 'parent') {
+        setUserInfo(res.partner_id);
+        dispatch(setUserId(res.user_id));
         navigation.navigate('ParentTab');
       } else {
+        setUserInfo(res.user_id);
+        dispatch(setUserId(res.user_id));
         navigation.navigate('ChildTab');
       }
     } else {

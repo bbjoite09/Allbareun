@@ -1,23 +1,24 @@
 import axios from 'axios';
+// import { useSelector } from 'react-redux';
+// import { RootState } from '../redux/store';
 import { axiosSrc } from '../static/url/axiosSrc';
 
 class HealthService {
-  setBodyData = async (
+  resetBodyData = async (
     weight: number,
     height: number,
     age: number,
     active_kcal: number,
+    url: string,
   ) => {
-    const healthUrl = axiosSrc.health + '/ch2';
     const data = await axios
-      .post(healthUrl, {
+      .patch(url, {
         weight,
         height,
         age,
         active_kcal,
       })
       .then(response => {
-        console.log(response.data);
         return response.data;
       })
       .catch(error => {
@@ -26,8 +27,35 @@ class HealthService {
     return data;
   };
 
-  getBodyData = async () => {
-    const data = await axios.get(axiosSrc.health + '/ch2').then(res => {
+  setBodyData = async (
+    weight: number,
+    height: number,
+    age: number,
+    active_kcal: number,
+    url: string,
+  ) => {
+    const data = await axios
+      .post(url, {
+        weight,
+        height,
+        age,
+        active_kcal,
+      })
+      .then(response => {
+        if (response.data.success) {
+          return response.data;
+        } else {
+          this.resetBodyData(weight, height, age, active_kcal, url);
+        }
+      })
+      .catch(error => {
+        throw error;
+      });
+    return data;
+  };
+
+  getBodyData = async (url: string) => {
+    const data = await axios.get(url).then(res => {
       return res;
     });
     return data;
