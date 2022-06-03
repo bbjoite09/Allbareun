@@ -13,7 +13,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { RootStackParamList } from '../../App';
 import Typography from '../elements/Typography';
-import { setUserData } from '../redux/modules/userInfo';
+import { setUserData, setUserId } from '../redux/modules/userInfo';
 import { RootState } from '../redux/store';
 import { service } from '../services';
 import { axiosSrc } from '../static/url/axiosSrc';
@@ -28,8 +28,8 @@ const Pairing = ({ navigation }: Props) => {
   const { user } = useSelector((state: RootState) => state);
   const dispatch = useDispatch();
 
-  const setUserInfo = async () => {
-    const axiosUrl = axiosSrc.health + '/' + user.id;
+  const setUserInfo = async (id: string) => {
+    const axiosUrl = axiosSrc.health + '/' + id;
     const userInfo = await service.health.getBodyData(axiosUrl);
     const userInfoData = userInfo.data;
 
@@ -39,10 +39,13 @@ const Pairing = ({ navigation }: Props) => {
   const handleOnPress = async () => {
     const res = await service.user.pairing(inputs.id);
     if (res.success) {
-      setUserInfo();
       if (res.user_type == 'parent') {
+        setUserInfo(res.partner_id);
+        dispatch(setUserId(res.user_id));
         navigation.navigate('ParentTab');
       } else {
+        setUserInfo(res.user_id);
+        dispatch(setUserId(res.user_id));
         navigation.navigate('ChildTab');
       }
     } else {
