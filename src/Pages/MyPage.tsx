@@ -16,8 +16,11 @@ import {
   View,
 } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
+import { useSelector } from 'react-redux';
 import Typography from '../elements/Typography';
+import { RootState } from '../redux/store';
 import { service } from '../services';
+import { axiosSrc } from '../static/url/axiosSrc';
 
 const { width, height } = Dimensions.get('screen');
 
@@ -34,6 +37,9 @@ const MyPage = () => {
   const weightList = [35, 34.3, 34.5, 34.5];
   const heightList = [150, 150.3, 150.5, 150.5];
 
+  const { user } = useSelector((state: RootState) => state);
+  const axiosUrl = axiosSrc.health + user.id;
+
   const getGraph = (type: string, growList: Array<number>) => {
     const data = {
       labels:
@@ -47,7 +53,10 @@ const MyPage = () => {
             ],
       datasets: [
         {
-          data: inputs.height ? growList : [...growList, inputs[type]],
+          data:
+            inputs.height == 0 && inputs.weight == 0 && inputs.age == 0
+              ? growList
+              : [...growList, inputs[type]],
           color: () => `#9CB96A`,
           strokeWidth: 2,
         },
@@ -73,6 +82,7 @@ const MyPage = () => {
       inputs.height,
       inputs.age,
       inputs.activeKcal,
+      axiosUrl,
     );
   };
 
@@ -123,9 +133,22 @@ const MyPage = () => {
             style={styles.profileImage}
           />
           <View style={styles.profileText}>
-            <Typography value="최시준 어린이" type="subtitle" />
+            <View
+              style={[
+                styles.rowContainer,
+                {
+                  borderWidth: 0,
+                },
+              ]}>
+              <Typography
+                value={user.userSex == 'M' ? '남자   ' : '여자   '}
+                type="subtitle"
+                textStyle={{ fontWeight: '900', color: '#8CC751' }}
+              />
+              <Typography value={user.name + ' 어린이'} type="subtitle" />
+            </View>
             <Typography
-              value="나이 : 11세"
+              value={' BMI 지수 :  ' + user.userBMI}
               type="subtitle"
               textStyle={{ textAlign: 'left', paddingTop: 10 }}
             />
@@ -134,7 +157,7 @@ const MyPage = () => {
 
         {/* 키, 몸무게 그래프 */}
         <View style={styles.growProfile}>
-          <Typography value="서준이의 키와 몸무게" type="subtitle" />
+          <Typography value={user.name + '의 키와 몸무게'} type="subtitle" />
           <Pressable
             style={styles.addGrowButton}
             onPress={() => {
@@ -190,7 +213,7 @@ const MyPage = () => {
 const chartConfig = {
   backgroundGradientFrom: 'white',
   backgroundGradientTo: 'white',
-  color: (opacity = 1) => `black`,
+  color: () => `black`,
   decimalPlaces: 0,
   barPercentage: 0.5,
   useShadowColorFromDataset: false, // optional
@@ -299,10 +322,12 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginLeft: 15,
     alignSelf: 'flex-start',
+    width: width - 240,
   },
   growProfile: {
     flexDirection: 'row',
-    marginTop: 40,
+    marginTop: 50,
+    marginBottom: 15,
     alignSelf: 'flex-start',
   },
   addGrowButton: {
