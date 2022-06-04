@@ -1,20 +1,19 @@
 import React, { useState } from 'react';
-// import * as Hangul from 'hangul-js';
-import * as Progress from 'react-native-progress';
 import {
+  Alert,
   Dimensions,
   Image,
+  Modal,
   Platform,
   Pressable,
   SafeAreaView,
   ScrollView,
   StyleSheet,
-  View,
-  Modal,
   Text,
-  Alert,
   TextInput,
+  View,
 } from 'react-native';
+import * as Progress from 'react-native-progress';
 import Typography from '../../elements/Typography';
 import foodDB from '../../static/datas/foodList.json';
 
@@ -26,22 +25,8 @@ const MissionParents = () => {
   const [text, setText] = useState<any>();
   const [search, setSearch] = useState<any>(null);
   const [personalEnergy, setPersonalEnergy] = useState<any>([0]);
-  const [energy, setEnergy] = useState<any>([0]);
+  const [energy, setEnergy] = useState<any>([0, 0, 0, 0, 0, 0]);
   const [personalMission, setPersonalMission] = useState<any>([]);
-
-  // const searchText = useRef<any>();
-
-  // // DB 초성열 추가
-  // foodDB.forEach(function (item: any) {
-  //   if (item.name) {
-  //     const dis = Hangul.disassemble(item.name, true);
-  //     const cho = dis.reduce(function (prev, elem: any) {
-  //       elem = elem[0] ? elem[0] : elem;
-  //       return prev + elem;
-  //     }, '');
-  //     item.diassembled = cho;
-  //   }
-  // });
 
   const addEnergy = (id: number, kcal: number) => {
     if (isSelect[id]) {
@@ -108,10 +93,7 @@ const MissionParents = () => {
             <ScrollView style={{ width: '100%' }}>
               {foodDB
                 .filter(data => {
-                  if (
-                    data.name.includes(text)
-                    // || data.diassembled.includes(Hangul.disassemble(text).join('')!,)
-                  ) {
+                  if (data.name.includes(text)) {
                     return data;
                   }
                   if (search === '') {
