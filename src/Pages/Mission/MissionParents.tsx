@@ -14,7 +14,9 @@ import {
   View,
 } from 'react-native';
 import * as Progress from 'react-native-progress';
+import { useSelector } from 'react-redux';
 import Typography from '../../elements/Typography';
+import { RootState } from '../../redux/store';
 import foodDB from '../../static/datas/foodList.json';
 
 const { width } = Dimensions.get('screen');
@@ -27,6 +29,8 @@ const MissionParents = () => {
   const [personalEnergy, setPersonalEnergy] = useState<any>([0]);
   const [energy, setEnergy] = useState<any>([0, 0, 0, 0, 0, 0]);
   const [personalMission, setPersonalMission] = useState<any>([]);
+
+  const { user } = useSelector((state: RootState) => state);
 
   const addEnergy = (id: number, kcal: number) => {
     if (isSelect[id]) {
@@ -161,7 +165,7 @@ const MissionParents = () => {
           progress={
             (energy.reduce((sum: any, now: any) => sum + now) +
               personalEnergy.reduce((sum: any, now: any) => sum + now)) /
-            1550
+            user.userKcal
           }
           width={width - 150}
           height={20}
@@ -176,7 +180,7 @@ const MissionParents = () => {
           source={
             energy.reduce((sum: any, now: any) => sum + now) +
               personalEnergy.reduce((sum: any, now: any) => sum + now) <
-            1550
+            user.userKcal
               ? require('../../static/images/Mission/pigGray.png')
               : require('../../static/images/Mission/pig.png')
           }
@@ -220,7 +224,7 @@ const MissionParents = () => {
           {getModal()}
           {energy.reduce((sum: any, now: any) => sum + now) +
             personalEnergy.reduce((sum: any, now: any) => sum + now) >=
-          1550
+          user.userKcal
             ? Alert.alert(
                 '꿀꿀~ 돼지경보🐽',
                 '체중관리를 위해 음식을 빼주세요!',

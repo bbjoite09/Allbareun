@@ -16,8 +16,9 @@ import {
   View,
 } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Typography from '../elements/Typography';
+import { setUserData } from '../redux/modules/userInfo';
 import { RootState } from '../redux/store';
 import { service } from '../services';
 import { axiosSrc } from '../static/url/axiosSrc';
@@ -38,7 +39,9 @@ const MyPage = () => {
   const heightList = [150, 150.3, 150.5, 150.5];
 
   const { user } = useSelector((state: RootState) => state);
-  const axiosUrl = axiosSrc.health + user.id;
+  const axiosUrl = axiosSrc.health + '/' + user.childId;
+
+  const dispatch = useDispatch();
 
   const getGraph = (type: string, growList: Array<number>) => {
     const data = {
@@ -83,6 +86,22 @@ const MyPage = () => {
       inputs.age,
       inputs.activeKcal,
       axiosUrl,
+    );
+
+    const userInfo = await service.health.getBodyData(
+      axiosSrc.health + '/' + user.childId,
+    );
+    const userInfoData = userInfo.data;
+
+    dispatch(
+      setUserData(
+        userInfoData.user.name,
+        userInfoData.user.user_sex,
+        userInfoData.bodyinfo.length == 0 ? '❌' : userInfoData.bodyinfo[0].bmi,
+        userInfoData.bodyinfo.length == 0
+          ? 1550
+          : userInfoData.bodyinfo[userInfoData.bodyinfo.length - 1].user_kcal,
+      ),
     );
   };
 

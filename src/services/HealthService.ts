@@ -1,7 +1,4 @@
 import axios from 'axios';
-// import { useSelector } from 'react-redux';
-// import { RootState } from '../redux/store';
-import { axiosSrc } from '../static/url/axiosSrc';
 
 class HealthService {
   resetBodyData = async (

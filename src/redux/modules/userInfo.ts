@@ -2,7 +2,9 @@ export interface UserState {
   name: string;
   userSex: string;
   userBMI: string | undefined | null;
-  id: string;
+  userKcal: number;
+  parentId: string;
+  childId: string;
 }
 
 // initial state
@@ -10,26 +12,35 @@ const initialState: UserState = {
   name: '---',
   userSex: 'F',
   userBMI: '❌',
-  id: 'pa09',
+  userKcal: 1550,
+  parentId: 'pa09',
+  childId: 'pa09',
 };
 
 // action
 export const SET_USER_DATA = 'SET_USER_DATA';
 export const SET_USER_ID = 'SET_USER_ID';
 
-export const setUserData = (name: string, userSex: string, userBMI?: any) => {
+export const setUserData = (
+  name: string,
+  userSex: string,
+  userBMI?: any,
+  userKcal?: any,
+) => {
   return {
     type: SET_USER_DATA,
     name,
     userSex,
     userBMI: userBMI ? userBMI : '❌',
+    userKcal: userKcal ? userKcal : 1550,
   };
 };
 
-export const setUserId = (id: string) => {
+export const setUserId = (parentId: string, childId: string) => {
   return {
     type: SET_USER_ID,
-    id,
+    parentId,
+    childId,
   };
 };
 
@@ -42,12 +53,14 @@ export const userReducer = (state = initialState, action: any) => {
         name: action.name,
         userSex: action.userSex,
         userBMI: action.userBMI,
+        userKcal: action.userKcal,
       };
     }
     case SET_USER_ID: {
       return {
         ...state,
-        id: action.id,
+        parentId: action.parentId,
+        childId: action.childId,
       };
     }
     default:
