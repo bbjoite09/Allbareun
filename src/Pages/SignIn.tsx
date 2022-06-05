@@ -34,9 +34,11 @@ const SignIn = ({ navigation }: Props) => {
         userInfoData.user.name,
         userInfoData.user.user_sex,
         userInfoData.bodyinfo.length == 0 ? '❌' : userInfoData.bodyinfo[0].bmi,
+        userInfoData.bodyinfo.length == 0
+          ? 1550
+          : userInfoData.bodyinfo[userInfoData.bodyinfo.length - 1].user_kcal,
       ),
     );
-    dispatch(setUserId(inputs.id));
   };
 
   const handleOnSignIn = async () => {
@@ -45,13 +47,14 @@ const SignIn = ({ navigation }: Props) => {
       // 어린이 - 보호자 유형 구분 후 네비게이션 이동
       if (res.user_type == 'parent') {
         setUserInfo(res.partner);
+        dispatch(setUserId(inputs.id, res.partner));
         navigation.navigate('ParentTab');
       } else {
         setUserInfo(inputs.id);
+        dispatch(setUserId(res.partner, inputs.id));
         navigation.navigate('ChildTab');
       }
     } else if (res.loginSuccess && !res.paring) {
-      dispatch(setUserId(inputs.id));
       navigation.navigate('Pairing');
     } else {
       Alert.alert('로그인 실패', res.message ? res.message : null);

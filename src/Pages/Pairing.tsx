@@ -25,7 +25,6 @@ const Pairing = ({ navigation }: Props) => {
     id: '',
   });
 
-  const { user } = useSelector((state: RootState) => state);
   const dispatch = useDispatch();
 
   const setUserInfo = async (id: string) => {
@@ -41,11 +40,11 @@ const Pairing = ({ navigation }: Props) => {
     if (res.success) {
       if (res.user_type == 'parent') {
         setUserInfo(res.partner_id);
-        dispatch(setUserId(res.user_id));
+        dispatch(setUserId(res.user_id, inputs.id));
         navigation.navigate('ParentTab');
       } else {
         setUserInfo(res.user_id);
-        dispatch(setUserId(res.user_id));
+        dispatch(setUserId(inputs.id, res.user_id));
         navigation.navigate('ChildTab');
       }
     } else {

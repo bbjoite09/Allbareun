@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Alert,
   Dimensions,
@@ -16,8 +16,9 @@ import {
   View,
 } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Typography from '../elements/Typography';
+import { setUserData } from '../redux/modules/userInfo';
 import { RootState } from '../redux/store';
 import { service } from '../services';
 import { axiosSrc } from '../static/url/axiosSrc';
@@ -32,31 +33,83 @@ const MyPage = () => {
     age: 0,
     activeKcal: 0,
   });
-  const date = new Date();
-  const dateList = ['01/01', '01/21', '02/14', '02/31'];
-  const weightList = [35, 34.3, 34.5, 34.5];
-  const heightList = [150, 150.3, 150.5, 150.5];
+
+  const [dateList, setDateList] = useState<any>([]);
+  const [weightList, setWeightList] = useState<any>([]);
+  const [heightList, setHeightList] = useState<any>([]);
+  const [isSelect, setSelect] = useState<any>(true);
 
   const { user } = useSelector((state: RootState) => state);
-  const axiosUrl = axiosSrc.health + user.id;
+  const axiosUrl = axiosSrc.health + '/' + user.childId;
 
-  const getGraph = (type: string, growList: Array<number>) => {
+  const dispatch = useDispatch();
+
+  const getGraphData = async () => {
+    const userInfo = await service.health.getBodyData(
+      axiosSrc.health + '/' + user.childId,
+    );
+    const userInfoData = userInfo.data;
+
+    if (
+      userInfoData.bodyinfo.length <= 5 &&
+      userInfoData.bodyinfo.length >= 1
+    ) {
+      const healthTotalList: {
+        date: string;
+        weight: number;
+        height: number;
+      }[] = [];
+      userInfoData.bodyinfo.map((data: any) => {
+        const healthList = { date: '', weight: 0, height: 0 };
+        healthList['date'] = data.updatedAt.slice(5, 10).replaceAll('-', '/');
+        healthList['weight'] = data.weight;
+        healthList['height'] = data.height;
+        healthTotalList.push(healthList);
+      });
+      return healthTotalList;
+    } else if (userInfoData.bodyinfo.length > 5) {
+      const healthTotalList: {
+        date: string;
+        weight: number;
+        height: number;
+      }[] = [];
+      userInfoData.bodyinfo.map((data: any, idx: number) => {
+        if (idx > userInfoData.bodyinfo.length - 6) {
+          const healthList = { date: '', weight: 0, height: 0 };
+          healthList['date'] = data.updatedAt.slice(5, 10).replaceAll('-', '/');
+          healthList['weight'] = data.weight;
+          healthList['height'] = data.height;
+          healthTotalList.push(healthList);
+        }
+      });
+      return healthTotalList;
+    } else {
+      return;
+    }
+  };
+
+  useEffect(() => {
+    getGraphData().then(res => {
+      const oldDateList: any = [];
+      const oldWeightList: any = [];
+      const oldHeightList: any = [];
+      res?.map(data => {
+        oldDateList.push(data.date);
+        oldWeightList.push(data.weight);
+        oldHeightList.push(data.height);
+      });
+      setDateList(oldDateList);
+      setWeightList(oldWeightList);
+      setHeightList(oldHeightList);
+    });
+  }, [isSelect]);
+
+  const getGraph = (growList: Array<number>) => {
     const data = {
-      labels:
-        inputs.height == 0 && inputs.weight == 0 && inputs.age == 0
-          ? dateList
-          : [
-              ...dateList,
-              `${('00' + (date.getMonth() + 1).toString()).slice(-2)}/${(
-                '00' + date.getDate().toString()
-              ).slice(-2)}`,
-            ],
+      labels: dateList,
       datasets: [
         {
-          data:
-            inputs.height == 0 && inputs.weight == 0 && inputs.age == 0
-              ? growList
-              : [...growList, inputs[type]],
+          data: growList,
           color: () => `#9CB96A`,
           strokeWidth: 2,
         },
@@ -84,6 +137,24 @@ const MyPage = () => {
       inputs.activeKcal,
       axiosUrl,
     );
+
+    const userInfo = await service.health.getBodyData(
+      axiosSrc.health + '/' + user.childId,
+    );
+    const userInfoData = userInfo.data;
+
+    dispatch(
+      setUserData(
+        userInfoData.user.name,
+        userInfoData.user.user_sex,
+        userInfoData.bodyinfo.length == 0 ? '❌' : userInfoData.bodyinfo[0].bmi,
+        userInfoData.bodyinfo.length == 0
+          ? 1550
+          : userInfoData.bodyinfo[userInfoData.bodyinfo.length - 1].user_kcal,
+      ),
+    );
+    getGraphData();
+    setSelect(!isSelect);
   };
 
   const handleInput = (title: string, key: string, autoFocuse?: boolean) => {
@@ -162,6 +233,7 @@ const MyPage = () => {
             style={styles.addGrowButton}
             onPress={() => {
               setModalVisible(true);
+              setSelect(!isSelect);
             }}>
             <Typography
               value="+"
@@ -170,8 +242,8 @@ const MyPage = () => {
             />
           </Pressable>
         </View>
-        {getGraph('height', heightList)}
-        {getGraph('weight', weightList)}
+        {getGraph(heightList)}
+        {getGraph(weightList)}
       </ScrollView>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <Modal
