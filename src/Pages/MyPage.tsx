@@ -41,9 +41,25 @@ const MyPage = () => {
 
   const { user } = useSelector((state: RootState) => state);
   const axiosUrl = axiosSrc.health + '/' + user.childId;
-
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    getGraphData().then(res => {
+      const oldDateList: any = [];
+      const oldWeightList: any = [];
+      const oldHeightList: any = [];
+      res?.map(data => {
+        oldDateList.push(data.date);
+        oldWeightList.push(data.weight);
+        oldHeightList.push(data.height);
+      });
+      setDateList(oldDateList);
+      setWeightList(oldWeightList);
+      setHeightList(oldHeightList);
+    });
+  }, [isSelect]);
+
+  // 그래프에서 보여줄 키, 몸무게, 날짜 정보 받아오기
   const getGraphData = async () => {
     const userInfo = await service.health.getBodyData(
       axiosSrc.health + '/' + user.childId,
@@ -59,12 +75,19 @@ const MyPage = () => {
         weight: number;
         height: number;
       }[] = [];
+      const healthList = { date: '', weight: 0, height: 0 };
+      if (userInfoData.bodyinfo.length == 1) {
+        healthTotalList.push({ date: '', weight: 0, height: 0 });
+        console.log(healthTotalList);
+      }
       userInfoData.bodyinfo.map((data: any) => {
-        const healthList = { date: '', weight: 0, height: 0 };
+        console.log(healthTotalList);
+
         healthList['date'] = data.updatedAt.slice(5, 10).replaceAll('-', '/');
         healthList['weight'] = data.weight;
         healthList['height'] = data.height;
         healthTotalList.push(healthList);
+        console.log(healthTotalList);
       });
       return healthTotalList;
     } else if (userInfoData.bodyinfo.length > 5) {
@@ -88,22 +111,7 @@ const MyPage = () => {
     }
   };
 
-  useEffect(() => {
-    getGraphData().then(res => {
-      const oldDateList: any = [];
-      const oldWeightList: any = [];
-      const oldHeightList: any = [];
-      res?.map(data => {
-        oldDateList.push(data.date);
-        oldWeightList.push(data.weight);
-        oldHeightList.push(data.height);
-      });
-      setDateList(oldDateList);
-      setWeightList(oldWeightList);
-      setHeightList(oldHeightList);
-    });
-  }, [isSelect]);
-
+  // 그래프 컴포넌트
   const getGraph = (growList: Array<number>) => {
     const data = {
       labels: dateList,
@@ -129,32 +137,46 @@ const MyPage = () => {
     );
   };
 
+  // 신체정보 등록 버튼 이벤트
   const handleEnroll = async () => {
-    await service.health.setBodyData(
-      inputs.weight,
-      inputs.height,
-      inputs.age,
-      inputs.activeKcal,
-      axiosUrl,
-    );
+    if (
+      inputs.height != 0 &&
+      inputs.weight != 0 &&
+      inputs.age != 0 &&
+      inputs.activeKcal != 0
+    ) {
+      await service.health.setBodyData(
+        inputs.weight,
+        inputs.height,
+        inputs.age,
+        inputs.activeKcal,
+        axiosUrl,
+      );
 
-    const userInfo = await service.health.getBodyData(
-      axiosSrc.health + '/' + user.childId,
-    );
-    const userInfoData = userInfo.data;
+      const userInfo = await service.health.getBodyData(
+        axiosSrc.health + '/' + user.childId,
+      );
+      const userInfoData = userInfo.data;
 
-    dispatch(
-      setUserData(
-        userInfoData.user.name,
-        userInfoData.user.user_sex,
-        userInfoData.bodyinfo.length == 0 ? '❌' : userInfoData.bodyinfo[0].bmi,
-        userInfoData.bodyinfo.length == 0
-          ? 1550
-          : userInfoData.bodyinfo[userInfoData.bodyinfo.length - 1].user_kcal,
-      ),
-    );
-    getGraphData();
-    setSelect(!isSelect);
+      dispatch(
+        setUserData(
+          userInfoData.user.name,
+          userInfoData.user.user_sex,
+          userInfoData.bodyinfo.length == 0
+            ? '❌'
+            : userInfoData.bodyinfo[0].bmi,
+          userInfoData.bodyinfo.length == 0
+            ? 1550
+            : userInfoData.bodyinfo[userInfoData.bodyinfo.length - 1].user_kcal,
+        ),
+      );
+      getGraphData();
+      setSelect(!isSelect);
+      setInputs({ height: 0, weight: 0, age: 0, activeKcal: 0 });
+    } else {
+      setModalVisible(true);
+      Alert.alert('경고', '모든 값을 입력해주세요.');
+    }
   };
 
   const handleInput = (title: string, key: string, autoFocuse?: boolean) => {
