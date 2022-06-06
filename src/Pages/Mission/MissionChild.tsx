@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Alert,
   Dimensions,
@@ -34,6 +34,7 @@ const MissionChild = () => {
   const [text, setText] = useState<any>();
   const [search, setSearch] = useState<any>(null);
   const [personalMission, setPersonalMission] = useState<any>([]);
+  const [missionList, setMissionList] = useState<any>();
 
   const { user } = useSelector((state: RootState) => state);
 
@@ -47,59 +48,25 @@ const MissionChild = () => {
     }
   };
 
-  const handleMission = (name: string) => {
-    return (
-      <View
-        style={[
-          styles.missionContainer,
-          { backgroundColor: `${isSelect[name] ? '#E4E4E4' : '#EDFF80'}` },
-        ]}>
-        <Image
-          source={require('../../static/images/Mission/missionImg.png')}
-          style={styles.missionImage}
-        />
-        <Typography
-          value={name + ' 먹기'}
-          type="subtitle"
-          textStyle={[
-            styles.missionText,
-            { width: isSelect[name] ? '55%' : '37%' },
-          ]}
-        />
-        {!isSelect[name] && (
-          <View style={styles.buttonContainer}>
-            <Pressable
-              style={styles.buttonStyle}
-              onPress={() => {
-                handleSelectState(name, 'success');
-                Toast.show('미션 성공 🎉', Toast.SHORT, ['UIAlertController']);
-                service.food.enrollFood(axiosSrc.addFood + user.childId, name);
-              }}>
-              <Typography value="성공" type="subtitle" />
-            </Pressable>
-            <Pressable
-              style={styles.buttonStyle}
-              onPress={() => {
-                handleSelectState(name, 'fail');
-                Toast.show('미션 실패 💦');
-              }}>
-              <Typography value="실패" type="subtitle" />
-            </Pressable>
-          </View>
-        )}
-        {isSuccess[name] && (
-          <View style={styles.buttonContainer}>
-            <Typography value="✅ 성공함" type="subtitle" />
-          </View>
-        )}
-        {isSelect[name] && !isSuccess[name] && (
-          <View style={styles.buttonContainer}>
-            <Typography value="❌ 실패함" type="subtitle" />
-          </View>
-        )}
-      </View>
-    );
+  const getMissionList = async () => {
+    const missionList: object[] = [];
+    const missionNameList: object[] = [];
+    await service.mission
+      .getMission(axiosSrc.getMissoin + user.childId)
+      .then(res => {
+        res.map((data: any) => {
+          missionList.push(data.content);
+        });
+      });
+    missionList.map((data: any) => {
+      missionNameList.push(data[0].name);
+    });
+    setMissionList(missionNameList);
   };
+
+  useEffect(() => {
+    getMissionList();
+  }, []);
 
   const getModal = () => {
     return (
@@ -213,9 +180,71 @@ const MissionChild = () => {
           );
         })}
         <View style={{ flexDirection: 'column' }}>
-          {handleMission('닭갈비')}
-          {handleMission('멸치풋고추볶음')}
-          {handleMission('가자미전')}
+          {typeof missionList != 'undefined'
+            ? missionList.map((data: any, idx: number) => {
+                return (
+                  <View
+                    key={idx}
+                    style={[
+                      styles.missionContainer,
+                      {
+                        backgroundColor: `${
+                          isSelect[data] ? '#E4E4E4' : '#EDFF80'
+                        }`,
+                      },
+                    ]}>
+                    <Image
+                      source={require('../../static/images/Mission/missionImg.png')}
+                      style={styles.missionImage}
+                    />
+                    <Typography
+                      value={data + ' 먹기'}
+                      type="subtitle"
+                      textStyle={[
+                        styles.missionText,
+                        { width: isSelect[data] ? '55%' : '40%' },
+                      ]}
+                    />
+                    {!isSelect[data] && (
+                      <View style={styles.buttonContainer}>
+                        <Pressable
+                          style={styles.buttonStyle}
+                          onPress={() => {
+                            service.mission.setMissionRecommendSuccess(
+                              axiosSrc.setMissionSuccess + user.childId,
+                              data,
+                            );
+                            handleSelectState(data, 'success');
+                            Toast.show('미션 성공 🎉', Toast.SHORT, [
+                              'UIAlertController',
+                            ]);
+                          }}>
+                          <Typography value="성공" type="subtitle" />
+                        </Pressable>
+                        <Pressable
+                          style={styles.buttonStyle}
+                          onPress={() => {
+                            handleSelectState(data, 'fail');
+                            Toast.show('미션 실패 💦');
+                          }}>
+                          <Typography value="실패" type="subtitle" />
+                        </Pressable>
+                      </View>
+                    )}
+                    {isSuccess[data] && (
+                      <View style={styles.buttonContainer}>
+                        <Typography value="✅ 성공함" type="subtitle" />
+                      </View>
+                    )}
+                    {isSelect[data] && !isSuccess[data] && (
+                      <View style={styles.buttonContainer}>
+                        <Typography value="❌ 실패함" type="subtitle" />
+                      </View>
+                    )}
+                  </View>
+                );
+              })
+            : null}
         </View>
         <View style={{ flexDirection: 'column' }}>
           {getModal()}

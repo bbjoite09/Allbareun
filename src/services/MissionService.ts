@@ -3,17 +3,57 @@ import { Alert } from 'react-native';
 import { axiosSrc } from '../static/url/axiosSrc';
 
 class MissionService {
-  getMission = async (url: string) => {
+  getRecommendMission = async (url: string) => {
     const data = await axios.get(url).then(res => {
       return res.data;
     });
     return data;
   };
 
-  sendMission = async (content: any) => {
+  sendPersonalMission = async (name: string) => {
     const data = await axios
-      .post(axiosSrc.setMission, {
+      .post(axiosSrc.setPersonalMisson, {
+        name,
+      })
+      .then(response => {
+        return response.data;
+      })
+      .catch(error => {
+        throw error;
+      });
+    return data;
+  };
+
+  sendRecommendMission = async (content: any) => {
+    const data = await axios
+      .post(axiosSrc.setRecommendMission, {
         content,
+      })
+      .then(response => {
+        return response.data;
+      })
+      .catch(error => {
+        throw error;
+      });
+    return data;
+  };
+
+  getMission = async (url: string) => {
+    const data = await axios
+      .get(url)
+      .then(res => {
+        return res.data;
+      })
+      .catch(error => {
+        throw error;
+      });
+    return data;
+  };
+
+  setMissionRecommendSuccess = async (url: string, name: string) => {
+    const data = await axios
+      .post(url, {
+        name,
       })
       .then(response => {
         return response.data;

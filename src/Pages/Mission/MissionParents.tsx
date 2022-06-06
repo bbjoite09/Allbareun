@@ -48,7 +48,7 @@ const MissionParents = ({ navigation }: Props) => {
   const handleGetMissionData = async () => {
     await service.food.getFoodList(axiosSrc.getFood + user.childId);
     await service.food.getReport(axiosSrc.report + user.childId);
-    const getList = await service.mission.getMission(
+    const getList = await service.mission.getRecommendMission(
       axiosSrc.getRecommendMission + user.childId,
     );
     setMissionList({ ...getList });
@@ -353,7 +353,7 @@ const MissionParents = ({ navigation }: Props) => {
           <Pressable
             style={[styles.selectButton, { marginBottom: 15 }]}
             onPress={async () => {
-              service.mission.sendMission(makeMissionFormforSend());
+              service.mission.sendRecommendMission(makeMissionFormforSend());
               Alert.alert('미션 전송 완료', '선택한 미션이 전송되었습니다.', [
                 {
                   text: '확인',

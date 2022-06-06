@@ -21,5 +21,8 @@ export const axiosSrc = {
   health: url.healthSrc + '/body/',
   report: url.reportUrl + '/',
   getRecommendMission: url.missionUrl + '/recommend/',
-  setMission: url.missionUrl + '/chooseMission',
+  setRecommendMission: url.missionUrl + '/chooseMission',
+  setPersonalMisson: url.missionUrl + '/addMission',
+  getMissoin: url.missionUrl + '/showMission/',
+  setMissionSuccess: url.missionUrl + '/performMission/',
 };

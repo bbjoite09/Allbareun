@@ -29,7 +29,7 @@ const MissionListDetail = ({ navigation, route }: Props) => {
   const handleGetMissionData = async () => {
     await service.food.getFoodList(axiosSrc.getFood + user.childId);
     await service.food.getReport(axiosSrc.report + user.childId);
-    const getList = await service.mission.getMission(
+    const getList = await service.mission.getRecommendMission(
       axiosSrc.getRecommendMission + user.childId,
     );
     setMissionList({ ...getList });
