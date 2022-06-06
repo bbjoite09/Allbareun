@@ -116,7 +116,11 @@ const MissionParents = () => {
                         setModalVisible(!modalVisible);
                       }}>
                       <View style={styles.modalList}>
-                        <Text style={[styles.modalText, { textAlign: 'left' }]}>
+                        <Text
+                          style={[
+                            styles.modalText,
+                            { textAlign: 'left', width: '70%' },
+                          ]}>
                           {data.name}
                         </Text>
                         <Text style={styles.modalText}>
@@ -314,7 +318,6 @@ const styles = StyleSheet.create({
   modalText: {
     fontSize: 16,
     textAlign: 'center',
-    marginLeft: '2%',
   },
   moddalButtonText: {
     fontSize: 16,

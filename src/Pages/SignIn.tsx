@@ -24,9 +24,7 @@ const SignIn = ({ navigation }: Props) => {
   const dispatch = useDispatch();
 
   const setUserInfo = async (id: string) => {
-    const userInfo = await service.health.getBodyData(
-      axiosSrc.health + '/' + id,
-    );
+    const userInfo = await service.health.getBodyData(axiosSrc.health + id);
     const userInfoData = userInfo.data;
 
     dispatch(

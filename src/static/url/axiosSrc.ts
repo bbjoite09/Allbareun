@@ -7,6 +7,7 @@ export const url = {
   usersSrc: baseUrl + '/users',
   foodSrc: baseUrl + '/intake',
   healthSrc: baseUrl + '/mypage',
+  reportUrl: baseUrl + '/report',
 };
 
 export const axiosSrc = {
@@ -14,6 +15,7 @@ export const axiosSrc = {
   signIn: url.usersSrc + '/login',
   pairing: url.usersSrc + '/partner',
   auth: url.usersSrc + '/auth',
-  food: url.foodSrc,
-  health: url.healthSrc + '/body',
+  addFood: url.foodSrc + '/add/',
+  health: url.healthSrc + '/body/',
+  report: baseUrl + '/report/',
 };

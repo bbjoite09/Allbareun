@@ -40,7 +40,7 @@ const MyPage = () => {
   const [isSelect, setSelect] = useState<any>(true);
 
   const { user } = useSelector((state: RootState) => state);
-  const axiosUrl = axiosSrc.health + '/' + user.childId;
+  const axiosUrl = axiosSrc.health + user.childId;
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -62,7 +62,7 @@ const MyPage = () => {
   // 그래프에서 보여줄 키, 몸무게, 날짜 정보 받아오기
   const getGraphData = async () => {
     const userInfo = await service.health.getBodyData(
-      axiosSrc.health + '/' + user.childId,
+      axiosSrc.health + user.childId,
     );
     const userInfoData = userInfo.data;
 
@@ -78,16 +78,12 @@ const MyPage = () => {
       const healthList = { date: '', weight: 0, height: 0 };
       if (userInfoData.bodyinfo.length == 1) {
         healthTotalList.push({ date: '', weight: 0, height: 0 });
-        console.log(healthTotalList);
       }
       userInfoData.bodyinfo.map((data: any) => {
-        console.log(healthTotalList);
-
         healthList['date'] = data.updatedAt.slice(5, 10).replaceAll('-', '/');
         healthList['weight'] = data.weight;
         healthList['height'] = data.height;
         healthTotalList.push(healthList);
-        console.log(healthTotalList);
       });
       return healthTotalList;
     } else if (userInfoData.bodyinfo.length > 5) {
@@ -154,7 +150,7 @@ const MyPage = () => {
       );
 
       const userInfo = await service.health.getBodyData(
-        axiosSrc.health + '/' + user.childId,
+        axiosSrc.health + user.childId,
       );
       const userInfoData = userInfo.data;
 
@@ -173,6 +169,7 @@ const MyPage = () => {
       getGraphData();
       setSelect(!isSelect);
       setInputs({ height: 0, weight: 0, age: 0, activeKcal: 0 });
+      setModalVisible(false);
     } else {
       setModalVisible(true);
       Alert.alert('경고', '모든 값을 입력해주세요.');
@@ -279,7 +276,7 @@ const MyPage = () => {
             <View style={styles.modalView}>
               <Typography
                 type="subtitle"
-                value="키와 몸무게를 입력해주세요."
+                value="어린이 정보를 입력해주세요."
                 textStyle={styles.modalText}
               />
               <View style={styles.modalInputContainer}>
@@ -292,7 +289,6 @@ const MyPage = () => {
                 style={styles.modalButton}
                 onPress={async () => {
                   handleEnroll();
-                  setModalVisible(!modalVisible);
                 }}>
                 <Text style={styles.textStyle}>등록</Text>
               </Pressable>
