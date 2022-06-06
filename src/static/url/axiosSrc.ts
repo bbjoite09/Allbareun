@@ -8,6 +8,7 @@ export const url = {
   foodSrc: baseUrl + '/intake',
   healthSrc: baseUrl + '/mypage',
   reportUrl: baseUrl + '/report',
+  missionUrl: baseUrl + '/mission',
 };
 
 export const axiosSrc = {
@@ -16,6 +17,9 @@ export const axiosSrc = {
   pairing: url.usersSrc + '/partner',
   auth: url.usersSrc + '/auth',
   addFood: url.foodSrc + '/add/',
+  getFood: url.foodSrc + '/list/',
   health: url.healthSrc + '/body/',
-  report: baseUrl + '/report/',
+  report: url.reportUrl + '/',
+  getRecommendMission: url.missionUrl + '/recommend/',
+  setMission: url.missionUrl + '/chooseMission',
 };

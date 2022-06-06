@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Alert,
   Dimensions,
@@ -17,20 +17,42 @@ import * as Progress from 'react-native-progress';
 import { useSelector } from 'react-redux';
 import Typography from '../../elements/Typography';
 import { RootState } from '../../redux/store';
+import { service } from '../../services';
 import foodDB from '../../static/datas/foodList.json';
+import { axiosSrc } from '../../static/url/axiosSrc';
 
 const { width } = Dimensions.get('screen');
 
 const MissionParents = () => {
-  const [isSelect, setSelect] = useState<any>([false, false, false]);
+  const [isSelect, setSelect] = useState<any>([
+    false,
+    false,
+    false,
+    false,
+    false,
+  ]);
   const [modalVisible, setModalVisible] = useState(false);
   const [text, setText] = useState<any>();
   const [search, setSearch] = useState<any>(null);
   const [personalEnergy, setPersonalEnergy] = useState<any>([0]);
-  const [energy, setEnergy] = useState<any>([0, 0, 0, 0, 0, 0]);
   const [personalMission, setPersonalMission] = useState<any>([]);
+  const [missionList, setMissionList] = useState<any>();
+  const [energy, setEnergy] = useState<any>([0, 0, 0, 0, 0, 0]);
 
   const { user } = useSelector((state: RootState) => state);
+
+  const handleGetMissionData = async () => {
+    await service.food.getFoodList(axiosSrc.getFood + user.childId);
+    await service.food.getReport(axiosSrc.report + user.childId);
+    const getList = await service.mission.getMission(
+      axiosSrc.getRecommendMission + user.childId,
+    );
+    setMissionList({ ...getList });
+  };
+
+  useEffect(() => {
+    handleGetMissionData();
+  }, []);
 
   const addEnergy = (id: number, kcal: number) => {
     if (isSelect[id]) {
@@ -41,31 +63,33 @@ const MissionParents = () => {
   };
 
   const handleMission = (id: number, mission: string, kcal: number) => {
-    return (
-      <Pressable
-        style={[
-          styles.missionContainer,
-          { backgroundColor: isSelect[id] ? '#ACE1C8' : 'white' },
-        ]}
-        onPress={() => {
-          setSelect([
-            ...isSelect.slice(0, id),
-            !isSelect[id],
-            ...isSelect.slice(id + 1),
-          ]);
-          addEnergy(id, kcal);
-        }}>
-        <Image
-          source={require('../../static/images/Mission/missionImg.png')}
-          style={styles.missionImage}
-        />
-        <Typography
-          value={mission}
-          type="subtitle"
-          textStyle={styles.missionText}
-        />
-      </Pressable>
-    );
+    if (typeof missionList != undefined) {
+      return (
+        <Pressable
+          style={[
+            styles.missionContainer,
+            { backgroundColor: isSelect[id] ? '#ACE1C8' : 'white' },
+          ]}
+          onPress={() => {
+            setSelect([
+              ...isSelect.slice(0, id),
+              !isSelect[id],
+              ...isSelect.slice(id + 1),
+            ]);
+            addEnergy(id, kcal);
+          }}>
+          <Image
+            source={require('../../static/images/Mission/missionImg.png')}
+            style={styles.missionImage}
+          />
+          <Typography
+            value={mission}
+            type="subtitle"
+            textStyle={styles.missionText}
+          />
+        </Pressable>
+      );
+    }
   };
 
   const getModal = () => {
@@ -150,18 +174,13 @@ const MissionParents = () => {
         source={require('../../static/images/logoTop.png')}
         style={styles.logoStyle}
       />
-      <Typography
-        value="오늘의 미션"
-        type="title"
-        containerStyle={{ marginBottom: 20 }}
-      />
       <View
         style={{
           display: 'flex',
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'center',
-          marginBottom: '5%',
+          marginBottom: 30,
         }}>
         <Text>총 열량 : </Text>
         <Progress.Bar
@@ -219,10 +238,32 @@ const MissionParents = () => {
             </Pressable>
           );
         })}
-        <View style={{ flexDirection: 'column' }}>
-          {handleMission(0, '오이 먹기', 30)}
-          {handleMission(1, '고등어 조림 먹기', 122)}
-          {handleMission(2, '오렌지 반개 먹기', 100)}
+        <View>
+          {handleMission(
+            0,
+            missionList?.mission1.name + ' 먹기',
+            missionList?.mission1.kcal,
+          )}
+          {handleMission(
+            1,
+            missionList?.mission2.name + ' 먹기',
+            missionList?.mission2.kcal,
+          )}
+          {handleMission(
+            2,
+            missionList?.mission3.name + ' 먹기',
+            missionList?.mission3.kcal,
+          )}
+          {handleMission(
+            3,
+            missionList?.mission4.name + ' 먹기',
+            missionList?.mission4.kcal,
+          )}
+          {handleMission(
+            4,
+            missionList?.mission5.name + ' 먹기',
+            missionList?.mission5.kcal,
+          )}
         </View>
         <View style={{ flexDirection: 'column' }}>
           {getModal()}
@@ -235,7 +276,7 @@ const MissionParents = () => {
               )
             : null}
           <Pressable
-            style={[styles.missionContainer, { backgroundColor: '#D9D9D9' }]}
+            style={[styles.missionContainer, { backgroundColor: '#E4E4E4' }]}
             onPress={() => setModalVisible(true)}>
             <Image
               source={require('../../static/images/Mission/plus.png')}
@@ -245,7 +286,7 @@ const MissionParents = () => {
                   borderWidth: 0,
                   width: 50,
                   height: 50,
-                  backgroundColor: '#D9D9D9',
+                  backgroundColor: '#E4E4E4',
                 },
               ]}
             />
@@ -257,7 +298,11 @@ const MissionParents = () => {
           </Pressable>
         </View>
       </ScrollView>
-      <Pressable style={[styles.selectButton, { marginBottom: 30 }]}>
+      <Pressable
+        style={[styles.selectButton, { marginBottom: 15 }]}
+        onPress={async () => {
+          console.log();
+        }}>
         <Typography
           value="미션 선택 완료"
           type="title"
@@ -366,9 +411,10 @@ const styles = StyleSheet.create({
     }),
   },
   logoStyle: {
-    width: width,
+    width: '105%',
     height: 105,
-    marginBottom: 20,
+    resizeMode: 'contain',
+    marginBottom: 30,
   },
   container: {
     backgroundColor: 'white',
@@ -382,7 +428,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#8CC751',
     borderRadius: 10,
     justifyContent: 'center',
-    marginTop: '5%',
+    marginTop: 15,
   },
 });
 

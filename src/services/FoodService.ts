@@ -2,9 +2,9 @@ import axios from 'axios';
 import { axiosSrc } from '../static/url/axiosSrc';
 
 class FoodService {
-  enrollFood = async (name: string) => {
+  enrollFood = async (url: string, name: string) => {
     const data = await axios
-      .post(axiosSrc.food, {
+      .post(url, {
         name,
       })
       .then(response => {
@@ -13,6 +13,20 @@ class FoodService {
       .catch(error => {
         throw error;
       });
+    return data;
+  };
+
+  getFoodList = async (url: string) => {
+    const data = await axios.get(url).then(res => {
+      return res.data;
+    });
+    return data;
+  };
+
+  getReport = async (url: string) => {
+    const data = await axios.get(url).then(res => {
+      return res.data;
+    });
     return data;
   };
 }
