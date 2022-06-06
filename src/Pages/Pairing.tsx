@@ -28,7 +28,7 @@ const Pairing = ({ navigation }: Props) => {
   const dispatch = useDispatch();
 
   const setUserInfo = async (id: string) => {
-    const axiosUrl = axiosSrc.health + '/' + id;
+    const axiosUrl = axiosSrc.health + id;
     const userInfo = await service.health.getBodyData(axiosUrl);
     const userInfoData = userInfo.data;
 
