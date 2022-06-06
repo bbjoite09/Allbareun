@@ -20,10 +20,13 @@ import { RootState } from '../../redux/store';
 import { service } from '../../services';
 import foodDB from '../../static/datas/foodList.json';
 import { axiosSrc } from '../../static/url/axiosSrc';
+import MissionDone from './MissionDone';
+import LottieView from 'lottie-react-native';
 
 const { width } = Dimensions.get('screen');
 
-const MissionParents = () => {
+type Props = NativeStackScreenProps<RootStackParamList, 'MissionList'>;
+const MissionParents = ({ navigation }: Props) => {
   const [isSelect, setSelect] = useState<any>([
     false,
     false,
@@ -168,151 +171,178 @@ const MissionParents = () => {
     );
   };
 
+  const makeMissionFormforSend = () => {
+    const selectedMissionList: object[] = [];
+    personalMission.map((data: string) => {
+      const missionName = { name: '' };
+      missionName['name'] = data;
+      selectedMissionList.push(missionName);
+    });
+    isSelect.map((data: boolean, idx: number) => {
+      if (data == true) {
+        const missionName = { name: '' };
+        const missionIdx = 'mission' + (idx + 1);
+        missionName['name'] = missionList[missionIdx].name;
+        selectedMissionList.push(missionName);
+      }
+    });
+    return selectedMissionList;
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <Image
         source={require('../../static/images/logoTop.png')}
         style={styles.logoStyle}
       />
-      <View
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'center',
-          marginBottom: 30,
-        }}>
-        <Text>총 열량 : </Text>
-        <Progress.Bar
-          animationType="timing"
-          progress={
-            (energy.reduce((sum: any, now: any) => sum + now) +
-              personalEnergy.reduce((sum: any, now: any) => sum + now)) /
-            user.userKcal
-          }
-          width={width - 150}
-          height={20}
-          color={'rgba(0, 130, 80, 1)'}
+
+      <>
+        <View
           style={{
-            marginLeft: '3%',
-            marginRight: '3%',
-            backgroundColor: 'rgba(0, 130, 80, 0.2)',
-          }}
-        />
-        <Image
-          source={
-            energy.reduce((sum: any, now: any) => sum + now) +
-              personalEnergy.reduce((sum: any, now: any) => sum + now) <
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginBottom: 30,
+          }}>
+          <Text>총 열량 : </Text>
+          <Progress.Bar
+            animationType="timing"
+            progress={
+              (energy.reduce((sum: any, now: any) => sum + now) +
+                personalEnergy.reduce((sum: any, now: any) => sum + now)) /
+              user.userKcal
+            }
+            width={width - 150}
+            height={20}
+            color={'rgba(0, 130, 80, 1)'}
+            style={{
+              marginLeft: '3%',
+              marginRight: '3%',
+              backgroundColor: 'rgba(0, 130, 80, 0.2)',
+            }}
+          />
+          <Image
+            source={
+              energy.reduce((sum: any, now: any) => sum + now) +
+                personalEnergy.reduce((sum: any, now: any) => sum + now) <
+              user.userKcal
+                ? require('../../static/images/Mission/pigGray.png')
+                : require('../../static/images/Mission/pig.png')
+            }
+            style={{ resizeMode: 'contain', width: 30, height: 30 }}
+          />
+        </View>
+        <ScrollView>
+          {personalMission.map((data: any, idx: number) => {
+            return (
+              <Pressable
+                key={idx}
+                style={[
+                  styles.missionContainer,
+                  { backgroundColor: '#ACE1C8' },
+                ]}
+                onPress={() => {
+                  setPersonalEnergy([
+                    ...personalEnergy.slice(0, idx + 1),
+                    ...personalEnergy.slice(idx + 2),
+                  ]);
+                  setPersonalMission([
+                    ...personalMission.slice(0, idx),
+                    ...personalMission.slice(idx + 1),
+                  ]);
+                }}>
+                <Image
+                  source={require('../../static/images/Mission/missionImg.png')}
+                  style={styles.missionImage}
+                />
+                <Typography
+                  value={data + ' 먹기'}
+                  type="subtitle"
+                  textStyle={styles.missionText}
+                />
+              </Pressable>
+            );
+          })}
+          <View>
+            {handleMission(
+              0,
+              missionList?.mission1.name + ' 먹기',
+              missionList?.mission1.kcal,
+            )}
+            {handleMission(
+              1,
+              missionList?.mission2.name + ' 먹기',
+              missionList?.mission2.kcal,
+            )}
+            {handleMission(
+              2,
+              missionList?.mission3.name + ' 먹기',
+              missionList?.mission3.kcal,
+            )}
+            {handleMission(
+              3,
+              missionList?.mission4.name + ' 먹기',
+              missionList?.mission4.kcal,
+            )}
+            {handleMission(
+              4,
+              missionList?.mission5.name + ' 먹기',
+              missionList?.mission5.kcal,
+            )}
+          </View>
+          <View style={{ flexDirection: 'column' }}>
+            {getModal()}
+            {energy.reduce((sum: any, now: any) => sum + now) +
+              personalEnergy.reduce((sum: any, now: any) => sum + now) >=
             user.userKcal
-              ? require('../../static/images/Mission/pigGray.png')
-              : require('../../static/images/Mission/pig.png')
-          }
-          style={{ resizeMode: 'contain', width: 30, height: 30 }}
-        />
-      </View>
-      <ScrollView>
-        {personalMission.map((data: any, idx: number) => {
-          return (
+              ? Alert.alert(
+                  '꿀꿀~ 돼지경보🐽',
+                  '체중관리를 위해 음식을 빼주세요!',
+                )
+              : null}
             <Pressable
-              key={idx}
-              style={[styles.missionContainer, { backgroundColor: '#ACE1C8' }]}
-              onPress={() => {
-                setPersonalEnergy([
-                  ...personalEnergy.slice(0, idx + 1),
-                  ...personalEnergy.slice(idx + 2),
-                ]);
-                setPersonalMission([
-                  ...personalMission.slice(0, idx),
-                  ...personalMission.slice(idx + 1),
-                ]);
-              }}>
+              style={[
+                styles.missionContainer,
+                { backgroundColor: '#e9ecef', borderColor: 'white' },
+              ]}
+              onPress={() => setModalVisible(true)}>
               <Image
-                source={require('../../static/images/Mission/missionImg.png')}
-                style={styles.missionImage}
+                source={require('../../static/images/Mission/plus.png')}
+                style={[
+                  styles.missionImage,
+                  {
+                    borderWidth: 0,
+                    width: 50,
+                    height: 50,
+                    backgroundColor: '#e9ecef',
+                  },
+                ]}
               />
               <Typography
-                value={data + ' 먹기'}
+                value={'직접 추가하기'}
                 type="subtitle"
                 textStyle={styles.missionText}
               />
             </Pressable>
-          );
-        })}
-        <View>
-          {handleMission(
-            0,
-            missionList?.mission1.name + ' 먹기',
-            missionList?.mission1.kcal,
-          )}
-          {handleMission(
-            1,
-            missionList?.mission2.name + ' 먹기',
-            missionList?.mission2.kcal,
-          )}
-          {handleMission(
-            2,
-            missionList?.mission3.name + ' 먹기',
-            missionList?.mission3.kcal,
-          )}
-          {handleMission(
-            3,
-            missionList?.mission4.name + ' 먹기',
-            missionList?.mission4.kcal,
-          )}
-          {handleMission(
-            4,
-            missionList?.mission5.name + ' 먹기',
-            missionList?.mission5.kcal,
-          )}
-        </View>
-        <View style={{ flexDirection: 'column' }}>
-          {getModal()}
-          {energy.reduce((sum: any, now: any) => sum + now) +
-            personalEnergy.reduce((sum: any, now: any) => sum + now) >=
-          user.userKcal
-            ? Alert.alert(
-                '꿀꿀~ 돼지경보🐽',
-                '체중관리를 위해 음식을 빼주세요!',
-              )
-            : null}
-          <Pressable
-            style={[styles.missionContainer, { backgroundColor: '#E4E4E4' }]}
-            onPress={() => setModalVisible(true)}>
-            <Image
-              source={require('../../static/images/Mission/plus.png')}
-              style={[
-                styles.missionImage,
-                {
-                  borderWidth: 0,
-                  width: 50,
-                  height: 50,
-                  backgroundColor: '#E4E4E4',
-                },
-              ]}
-            />
-            <Typography
-              value={'직접 추가하기'}
-              type="subtitle"
-              textStyle={styles.missionText}
-            />
-          </Pressable>
-        </View>
-      </ScrollView>
-      <Pressable
-        style={[styles.selectButton, { marginBottom: 15 }]}
-        onPress={async () => {
-          console.log();
-        }}>
-        <Typography
-          value="미션 선택 완료"
-          type="title"
-          textStyle={{
-            textDecorationLine: 'none',
-            color: 'white',
-            fontSize: 22,
-          }}
-        />
-      </Pressable>
+          </View>
+        </ScrollView>
+        <Pressable
+          style={[styles.selectButton, { marginBottom: 15 }]}
+          onPress={async () => {
+            service.mission.sendMission(makeMissionFormforSend());
+          }}>
+          <Typography
+            value="미션 선택 완료"
+            type="title"
+            textStyle={{
+              textDecorationLine: 'none',
+              color: 'white',
+              fontSize: 22,
+            }}
+          />
+        </Pressable>
+      </>
     </SafeAreaView>
   );
 };
@@ -382,6 +412,8 @@ const styles = StyleSheet.create({
   missionText: {
     marginLeft: 20,
     textAlignVertical: 'center',
+    width: '70%',
+    textAlign: 'left',
   },
   buttonContainer: {
     flexDirection: 'row',

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { Alert } from 'react-native';
 import { axiosSrc } from '../static/url/axiosSrc';
 
 class MissionService {
@@ -6,6 +7,20 @@ class MissionService {
     const data = await axios.get(url).then(res => {
       return res.data;
     });
+    return data;
+  };
+
+  sendMission = async (content: any) => {
+    const data = await axios
+      .post(axiosSrc.setMission, {
+        content,
+      })
+      .then(response => {
+        return response.data;
+      })
+      .catch(error => {
+        throw error;
+      });
     return data;
   };
 }
