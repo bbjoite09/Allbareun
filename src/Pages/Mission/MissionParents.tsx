@@ -162,6 +162,7 @@ const MissionParents = ({ navigation }: Props) => {
                         setPersonalEnergy([...personalEnergy, data.energy]);
                         setPersonalMission([...personalMission, data.name]);
                         setModalVisible(!modalVisible);
+                        service.mission.addPersonalMission(data.name);
                       }}>
                       <View style={styles.modalList}>
                         <Text
@@ -255,6 +256,32 @@ const MissionParents = ({ navigation }: Props) => {
             />
           </View>
           <ScrollView>
+            {typeof missionList != 'undefined' ? (
+              <Pressable
+                style={[
+                  styles.missionContainer,
+                  { backgroundColor: '#e9ecef', borderColor: 'white' },
+                ]}
+                onPress={() => setModalVisible(true)}>
+                <Image
+                  source={require('../../static/images/Mission/plus.png')}
+                  style={[
+                    styles.missionImage,
+                    {
+                      borderWidth: 0,
+                      width: 50,
+                      height: 50,
+                      backgroundColor: '#e9ecef',
+                    },
+                  ]}
+                />
+                <Typography
+                  value={'직접 추가하기'}
+                  type="subtitle"
+                  textStyle={styles.missionText}
+                />
+              </Pressable>
+            ) : null}
             {personalMission.map((data: any, idx: number) => {
               return (
                 <Pressable
@@ -322,32 +349,6 @@ const MissionParents = ({ navigation }: Props) => {
                     '체중관리를 위해 음식을 빼주세요!',
                   )
                 : null}
-              {typeof missionList != 'undefined' ? (
-                <Pressable
-                  style={[
-                    styles.missionContainer,
-                    { backgroundColor: '#e9ecef', borderColor: 'white' },
-                  ]}
-                  onPress={() => setModalVisible(true)}>
-                  <Image
-                    source={require('../../static/images/Mission/plus.png')}
-                    style={[
-                      styles.missionImage,
-                      {
-                        borderWidth: 0,
-                        width: 50,
-                        height: 50,
-                        backgroundColor: '#e9ecef',
-                      },
-                    ]}
-                  />
-                  <Typography
-                    value={'직접 추가하기'}
-                    type="subtitle"
-                    textStyle={styles.missionText}
-                  />
-                </Pressable>
-              ) : null}
             </View>
           </ScrollView>
           <Pressable

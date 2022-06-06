@@ -112,8 +112,8 @@ const MissionChild = () => {
                       key={data.id}
                       onPress={() => {
                         setPersonalMission([...personalMission, data.name]);
-                        service.food.enrollFood(
-                          axiosSrc.addFood + user.childId,
+                        service.mission.setMissionPersonalSuccess(
+                          axiosSrc.setMissionPersonalSuccess + user.childId,
                           data.name,
                         );
                         setModalVisible(!modalVisible);
@@ -211,7 +211,8 @@ const MissionChild = () => {
                           style={styles.buttonStyle}
                           onPress={() => {
                             service.mission.setMissionRecommendSuccess(
-                              axiosSrc.setMissionSuccess + user.childId,
+                              axiosSrc.setMissionRecommendSuccess +
+                                user.childId,
                               data,
                             );
                             handleSelectState(data, 'success');

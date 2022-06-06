@@ -10,7 +10,7 @@ class MissionService {
     return data;
   };
 
-  sendPersonalMission = async (name: string) => {
+  addPersonalMission = async (name: string) => {
     const data = await axios
       .post(axiosSrc.setPersonalMisson, {
         name,
@@ -51,6 +51,19 @@ class MissionService {
   };
 
   setMissionRecommendSuccess = async (url: string, name: string) => {
+    const data = await axios
+      .post(url, {
+        name,
+      })
+      .then(response => {
+        return response.data;
+      })
+      .catch(error => {
+        throw error;
+      });
+    return data;
+  };
+  setMissionPersonalSuccess = async (url: string, name: string) => {
     const data = await axios
       .post(url, {
         name,
