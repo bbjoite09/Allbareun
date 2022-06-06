@@ -21,7 +21,7 @@ const MissionList = ({ navigation }: Props) => {
       <Calendar
         current={Date()}
         minDate={'2022-01-01'}
-        maxDate={'2022-12-31'}
+        maxDate={Date()}
         onDayPress={day => {
           navigation.navigate('MissionListDetail', { day });
         }}

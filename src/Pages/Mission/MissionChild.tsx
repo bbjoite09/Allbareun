@@ -61,7 +61,10 @@ const MissionChild = () => {
         <Typography
           value={name + ' 먹기'}
           type="subtitle"
-          textStyle={styles.missionText}
+          textStyle={[
+            styles.missionText,
+            { width: isSelect[name] ? '55%' : '37%' },
+          ]}
         />
         {!isSelect[name] && (
           <View style={styles.buttonContainer}>
@@ -264,7 +267,7 @@ const styles = StyleSheet.create({
   missionText: {
     marginLeft: 20,
     textAlignVertical: 'center',
-    width: '37%',
+    width: '55%',
     textAlign: 'left',
     lineHeight: 25,
   },

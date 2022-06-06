@@ -1,39 +1,92 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Dimensions,
   Image,
   Platform,
   Pressable,
   SafeAreaView,
+  ScrollView,
   StyleSheet,
   View,
 } from 'react-native';
 import Toast from 'react-native-simple-toast';
+import { useSelector } from 'react-redux';
 import { RootStackParamList } from '../../../App';
 import Typography from '../../elements/Typography';
+import { RootState } from '../../redux/store';
+import { service } from '../../services';
+import { axiosSrc } from '../../static/url/axiosSrc';
 
 const { width } = Dimensions.get('screen');
 type Props = NativeStackScreenProps<RootStackParamList, 'MissionListDetail'>;
 
 const MissionListDetail = ({ navigation, route }: Props) => {
   const { day }: any = route.params;
+  const { user } = useSelector((state: RootState) => state);
+  const [missionList, setMissionList] = useState<any>();
 
-  const getMission = (mission: any) => {
-    return (
-      <View style={[styles.missionContainer]}>
-        <Image
-          source={require('../../static/images/Mission/missionImg.png')}
-          style={styles.missionImage}
-        />
-        <Typography
-          value={mission}
-          type="subtitle"
-          textStyle={styles.missionText}
-        />
-      </View>
+  const handleGetMissionData = async () => {
+    await service.food.getFoodList(axiosSrc.getFood + user.childId);
+    await service.food.getReport(axiosSrc.report + user.childId);
+    const getList = await service.mission.getMission(
+      axiosSrc.getRecommendMission + user.childId,
     );
+    setMissionList({ ...getList });
   };
+
+  useEffect(() => {
+    handleGetMissionData();
+  }, []);
+
+  const handleMission = (mission: string) => {
+    if (typeof missionList != 'undefined') {
+      const randomIdx = Math.floor(Math.random() * 2);
+      return (
+        <View style={styles.missionContainer}>
+          <Image
+            source={require('../../static/images/Mission/missionImg.png')}
+            style={styles.missionImage}
+          />
+          <Typography
+            value={mission}
+            type="subtitle"
+            textStyle={styles.missionText}
+          />
+          {randomIdx ? (
+            <View style={styles.buttonContainer}>
+              <Typography value="✅ 성공함" type="subtitle" />
+            </View>
+          ) : (
+            <View style={styles.buttonContainer}>
+              <Typography value="❌ 실패함" type="subtitle" />
+            </View>
+          )}
+        </View>
+      );
+    } else {
+      return (
+        <View style={[styles.missionContainer]}>
+          <View
+            style={[
+              styles.missionImage,
+              { backgroundColor: 'white', borderColor: 'white' },
+            ]}
+          />
+          <View
+            style={{
+              width: Math.floor(Math.random() * (250 - 130) + 130),
+              backgroundColor: 'white',
+              height: 20,
+              borderRadius: 50,
+              marginLeft: 20,
+            }}
+          />
+        </View>
+      );
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <Pressable onPress={() => navigation.navigate('MissionList')}>
@@ -45,13 +98,17 @@ const MissionListDetail = ({ navigation, route }: Props) => {
       <Typography
         value={`${day.year}년 ${day.month}월 ${day.day}일`}
         type="title"
-        containerStyle={{ marginBottom: 20 }}
+        containerStyle={{ marginBottom: 30 }}
       />
-      <View style={{ flexDirection: 'column' }}>
-        {getMission('오이 먹기')}
-        {getMission('점심 남기지 않기')}
-        {getMission('오렌지 반개 먹기')}
-      </View>
+      <ScrollView>
+        <View style={{ flexDirection: 'column' }}>
+          {handleMission(missionList?.mission1.name + ' 먹기')}
+          {handleMission(missionList?.mission2.name + ' 먹기')}
+          {handleMission(missionList?.mission3.name + ' 먹기')}
+          {handleMission(missionList?.mission4.name + ' 먹기')}
+          {handleMission(missionList?.mission5.name + ' 먹기')}
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -59,12 +116,14 @@ const MissionListDetail = ({ navigation, route }: Props) => {
 const styles = StyleSheet.create({
   missionContainer: {
     flexDirection: 'row',
-    backgroundColor: '#E4E4E4',
     alignItems: 'center',
     justifyContent: 'flex-start',
+    backgroundColor: '#e9ecef',
+    borderColor: 'white',
+    borderWidth: 1,
     width: width,
-    height: 76,
-    marginTop: 10,
+    height: 80,
+    marginBottom: 10,
   },
   missionImage: {
     width: 47,
@@ -77,6 +136,8 @@ const styles = StyleSheet.create({
   },
   missionText: {
     marginLeft: 20,
+    width: '55%',
+    textAlign: 'left',
     textAlignVertical: 'center',
   },
   container: {
@@ -88,6 +149,11 @@ const styles = StyleSheet.create({
     width: width,
     height: 105,
     marginBottom: 50,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    marginLeft: 'auto',
+    marginRight: 10,
   },
 });
 
