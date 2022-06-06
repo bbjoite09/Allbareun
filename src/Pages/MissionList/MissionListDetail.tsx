@@ -1,5 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
+import LottieView from 'lottie-react-native';
+
 import {
   Dimensions,
   Image,
@@ -27,65 +29,31 @@ const MissionListDetail = ({ navigation, route }: Props) => {
   const [missionList, setMissionList] = useState<any>();
 
   const handleGetMissionData = async () => {
-    await service.food.getFoodList(axiosSrc.getFood + user.childId);
-    await service.food.getReport(axiosSrc.report + user.childId);
-    const getList = await service.mission.getRecommendMission(
-      axiosSrc.getRecommendMission + user.childId,
-    );
-    setMissionList({ ...getList });
+    const today = `${day.year}-${('00' + day.month.toString()).slice(-2)}-${(
+      '00' + day.day.toString()
+    ).slice(-2)}`;
+    console.log(today);
+
+    const allMissionList: any[] = [];
+
+    const getList = await service.mission
+      .getLastMission(axiosSrc.getLastMission + user.childId, today)
+      .then(res => {
+        return res.docs;
+      });
+
+    getList.map((data: any) => {
+      const nameAndState: any = {};
+      nameAndState['name'] = data.content[0].name;
+      nameAndState['state'] = data.mission_state == 'done' ? true : false;
+      allMissionList.push(nameAndState);
+    });
+    setMissionList(allMissionList);
   };
 
   useEffect(() => {
     handleGetMissionData();
   }, []);
-
-  const handleMission = (mission: string) => {
-    if (typeof missionList != 'undefined') {
-      const randomIdx = Math.floor(Math.random() * 2);
-      return (
-        <View style={styles.missionContainer}>
-          <Image
-            source={require('../../static/images/Mission/missionImg.png')}
-            style={styles.missionImage}
-          />
-          <Typography
-            value={mission}
-            type="subtitle"
-            textStyle={styles.missionText}
-          />
-          {randomIdx ? (
-            <View style={styles.buttonContainer}>
-              <Typography value="✅ 성공함" type="subtitle" />
-            </View>
-          ) : (
-            <View style={styles.buttonContainer}>
-              <Typography value="❌ 실패함" type="subtitle" />
-            </View>
-          )}
-        </View>
-      );
-    } else {
-      return (
-        <View style={[styles.missionContainer]}>
-          <View
-            style={[
-              styles.missionImage,
-              { backgroundColor: 'white', borderColor: 'white' },
-            ]}
-          />
-          <View
-            style={{
-              width: Math.floor(Math.random() * (250 - 130) + 130),
-              backgroundColor: 'white',
-              height: 20,
-              borderRadius: 50,
-              marginLeft: 20,
-            }}
-          />
-        </View>
-      );
-    }
-  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -102,11 +70,74 @@ const MissionListDetail = ({ navigation, route }: Props) => {
       />
       <ScrollView>
         <View style={{ flexDirection: 'column' }}>
-          {handleMission(missionList?.mission1.name + ' 먹기')}
-          {handleMission(missionList?.mission2.name + ' 먹기')}
-          {handleMission(missionList?.mission3.name + ' 먹기')}
-          {handleMission(missionList?.mission4.name + ' 먹기')}
-          {handleMission(missionList?.mission5.name + ' 먹기')}
+          {typeof missionList != 'undefined' ? (
+            missionList.length != 0 ? (
+              missionList.map(
+                (data: { name: string; state: boolean }, idx: number) => {
+                  return (
+                    <View style={styles.missionContainer} key={idx}>
+                      <Image
+                        source={require('../../static/images/Mission/missionImg.png')}
+                        style={styles.missionImage}
+                      />
+                      <Typography
+                        value={data.name}
+                        type="subtitle"
+                        textStyle={styles.missionText}
+                      />
+                      {data.state ? (
+                        <View style={styles.buttonContainer}>
+                          <Typography value="✅ 성공함" type="subtitle" />
+                        </View>
+                      ) : (
+                        <View style={styles.buttonContainer}>
+                          <Typography value="❌ 실패함" type="subtitle" />
+                        </View>
+                      )}
+                    </View>
+                  );
+                },
+              )
+            ) : (
+              <View
+                style={{
+                  display: 'flex',
+                  height: '100%',
+                  alignItems: 'center',
+                  justifyContent: 'space-around',
+                }}>
+                <LottieView
+                  source={require('../../static/images/MissionList/none.json')}
+                  autoPlay
+                  loop
+                  style={{ width: '85%' }}
+                />
+                <Typography
+                  value={'해당 날짜에\n수행한 미션이 없습니다.'}
+                  type="subtitle"
+                  textStyle={{ lineHeight: 35, fontSize: 23, marginTop: '5%' }}
+                />
+              </View>
+            )
+          ) : (
+            <View style={[styles.missionContainer]}>
+              <View
+                style={[
+                  styles.missionImage,
+                  { backgroundColor: 'white', borderColor: 'white' },
+                ]}
+              />
+              <View
+                style={{
+                  width: Math.floor(Math.random() * (250 - 130) + 130),
+                  backgroundColor: 'white',
+                  height: 20,
+                  borderRadius: 50,
+                  marginLeft: 20,
+                }}
+              />
+            </View>
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>

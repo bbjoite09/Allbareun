@@ -25,4 +25,5 @@ export const axiosSrc = {
   setRecommendMission: url.missionUrl + '/chooseMission',
   setPersonalMisson: url.missionUrl + '/addMission',
   getMissoin: url.missionUrl + '/showMission/',
+  getLastMission: url.reportUrl + '/lastMission/',
 };

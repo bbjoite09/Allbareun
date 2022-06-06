@@ -63,10 +63,25 @@ class MissionService {
       });
     return data;
   };
+
   setMissionPersonalSuccess = async (url: string, name: string) => {
     const data = await axios
       .post(url, {
         name,
+      })
+      .then(response => {
+        return response.data;
+      })
+      .catch(error => {
+        throw error;
+      });
+    return data;
+  };
+
+  getLastMission = async (url: string, date: string) => {
+    const data = await axios
+      .post(url, {
+        date,
       })
       .then(response => {
         return response.data;
