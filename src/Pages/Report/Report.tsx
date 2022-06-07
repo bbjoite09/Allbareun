@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Dimensions,
   Image,
@@ -8,14 +8,28 @@ import {
   View,
 } from 'react-native';
 import { BarChart } from 'react-native-chart-kit';
+import { useSelector } from 'react-redux';
 import Typography from '../../elements/Typography';
+import { RootState } from '../../redux/store';
+import { service } from '../../services';
+import { axiosSrc } from '../../static/url/axiosSrc';
 import RadarChart from './RadarChart';
 
 const { width } = Dimensions.get('window');
 
 const Report = () => {
-  const dateList = [2021.12, 2022.01, 2022.02, 2022.03, 2022.04];
-  const acheiveCountList = [20, 15, 13, 17, 25];
+  const dateList = [2021.01, 2022.02, 2022.03, 2022.04, 2022.05];
+  // const [dateList, setDateList] = useState();
+  // const [acheiveCountList, setAcheiveCountList] = useState();
+  const [countData, setCountData] = useState<any>();
+  const acheiveCountList = [
+    10,
+    6,
+    8,
+    7,
+    typeof countData != 'undefined' ? countData.doneMission : 0,
+  ];
+
   const data = {
     labels: dateList,
     datasets: [
@@ -25,6 +39,17 @@ const Report = () => {
       },
     ],
   };
+  const { user } = useSelector((state: RootState) => state);
+  const axiosUrl = axiosSrc.getMonthMissionCount + user.childId;
+
+  const getCount = async () => {
+    const count = await service.mission.getMonthMissionCount(axiosUrl);
+    setCountData(count);
+  };
+
+  useEffect(() => {
+    getCount();
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -34,12 +59,33 @@ const Report = () => {
       />
       <ScrollView>
         <Typography
-          value="영양 섭취 점수(평균 2731kcal)"
+          value={`평균 미션 수행률 (총 ${
+            typeof countData != 'undefined' ? countData.AllMission : 0
+          }회)`}
           type="subtitle"
           containerStyle={styles.textStyle}
         />
         <View style={styles.nutriScoreGraphContainer}>
-          <View style={styles.nutriScoreGraph} />
+          <View
+            style={[
+              styles.nutriScoreGraph,
+              {
+                width:
+                  typeof countData != 'undefined'
+                    ? (width - 50) * (countData.performance_rate / 100)
+                    : 0,
+              },
+            ]}>
+            <Typography
+              type="subtitle"
+              value={
+                typeof countData != 'undefined'
+                  ? countData.doneMission + '회'
+                  : 0 + '회'
+              }
+              textStyle={{ lineHeight: 35, fontSize: 16, color: 'white' }}
+            />
+          </View>
         </View>
         <View style={styles.nutriScoreTextContainer}>
           <Typography value="낮음" textStyle={styles.nutriScoreText} />
@@ -47,15 +93,13 @@ const Report = () => {
           <Typography value="권장" textStyle={styles.nutriScoreText} />
           <Typography value="초과" textStyle={styles.nutriScoreText} />
         </View>
-        <RadarChart />
         <Typography
-          value="이번 한달간 탄수화물, 지방의 섭취량은 표준이상이며, 단백질, 나트륨의 섭취량은 표준 이하입니다."
-          textStyle={{ textAlign: 'left', padding: 25 }}
-        />
-        <Typography
-          value="날짜별 미션 성공률"
+          value="평균 미션 성공 횟수"
           type="subtitle"
-          containerStyle={styles.textStyle}
+          containerStyle={[
+            styles.textStyle,
+            { marginTop: 50, marginBottom: 20 },
+          ]}
         />
         <BarChart
           data={data}
@@ -68,7 +112,22 @@ const Report = () => {
           style={styles.chartContainer}
         />
         <Typography
-          value={`저번 달보다 미션 성공률이 줄어들어 ${acheiveCountList[4]}개의 미션을 수행하셨습니다. 다음 달에는 새로운 신기록을 도전해보세요!`}
+          value={`저번 달보다 미션 성공률이 줄어들어 ${
+            typeof countData != 'undefined' ? countData.doneMission : 0
+          }개의 미션을 수행하셨습니다. 다음 달에는 새로운 신기록에 도전해보세요!`}
+          textStyle={{ textAlign: 'left', padding: 25 }}
+        />
+        <Typography
+          value="섭취한 영양소 그래프"
+          type="subtitle"
+          containerStyle={[
+            styles.textStyle,
+            { marginTop: 30, marginBottom: 20 },
+          ]}
+        />
+        <RadarChart />
+        <Typography
+          value="이번 한달간 탄수화물, 지방의 섭취량은 표준이상이며, 단백질, 나트륨의 섭취량은 표준 이하입니다."
           textStyle={{ textAlign: 'left', padding: 25 }}
         />
       </ScrollView>
@@ -96,7 +155,7 @@ const styles = StyleSheet.create({
     height: 75,
   },
   textStyle: {
-    marginTop: 20,
+    marginTop: 30,
   },
   nutriScoreGraphContainer: {
     marginTop: 10,
@@ -107,7 +166,6 @@ const styles = StyleSheet.create({
   },
   nutriScoreGraph: {
     height: 35,
-    width: (width - 50) * 0.8,
     backgroundColor: '#9CB96A',
     alignSelf: 'flex-start',
   },

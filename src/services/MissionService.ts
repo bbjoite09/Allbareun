@@ -91,6 +91,13 @@ class MissionService {
       });
     return data;
   };
+
+  getMonthMissionCount = async (url: string) => {
+    const data = await axios.get(url).then(res => {
+      return res.data;
+    });
+    return data;
+  };
 }
 
 export default MissionService;
