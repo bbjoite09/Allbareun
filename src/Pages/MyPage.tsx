@@ -75,12 +75,16 @@ const MyPage = () => {
         weight: number;
         height: number;
       }[] = [];
-      const healthList = { date: '', weight: 0, height: 0 };
+
       if (userInfoData.bodyinfo.length == 1) {
         healthTotalList.push({ date: '', weight: 0, height: 0 });
       }
       userInfoData.bodyinfo.map((data: any) => {
-        healthList['date'] = data.updatedAt.slice(5, 10).replaceAll('-', '/');
+        const healthList = { date: '', weight: 0, height: 0 };
+        healthList['date'] =
+          Platform.OS == 'ios'
+            ? data.updatedAt.slice(5, 10).replaceAll('-', '/')
+            : data.updatedAt.slice(2, 10);
         healthList['weight'] = data.weight;
         healthList['height'] = data.height;
         healthTotalList.push(healthList);
@@ -95,7 +99,10 @@ const MyPage = () => {
       userInfoData.bodyinfo.map((data: any, idx: number) => {
         if (idx > userInfoData.bodyinfo.length - 6) {
           const healthList = { date: '', weight: 0, height: 0 };
-          healthList['date'] = data.updatedAt.slice(5, 10).replaceAll('-', '/');
+          healthList['date'] =
+            Platform.OS == 'ios'
+              ? data.updatedAt.slice(5, 10).replaceAll('-', '/')
+              : data.updatedAt.slice(2, 10);
           healthList['weight'] = data.weight;
           healthList['height'] = data.height;
           healthTotalList.push(healthList);
@@ -184,7 +191,7 @@ const MyPage = () => {
           type="subtitle"
           containerStyle={{
             width: '30%',
-            height: 35,
+            height: 40,
             backgroundColor: '#8CC751',
           }}
           textStyle={{ lineHeight: 35, color: 'white' }}
@@ -342,7 +349,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
     width: '80%',
-    height: '50%',
+    height: `${Platform.OS == 'ios' ? '50%' : '63%'}`,
   },
 
   modalButton: {
@@ -366,6 +373,7 @@ const styles = StyleSheet.create({
   modalInput: {
     marginBottom: 20,
     fontSize: 16,
+    lineHeight: 16,
   },
 
   rowContainer: {
@@ -377,8 +385,8 @@ const styles = StyleSheet.create({
   },
   inputText: {
     width: '70%',
-    height: 35,
-    fontSize: 15,
+    height: 40,
+    fontSize: 13,
     paddingLeft: '5%',
   },
   profileContainer: {
@@ -426,7 +434,6 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     backgroundColor: '#9CB96A',
     borderRadius: 15,
-    justifyContent: 'center',
     ...Platform.select({
       ios: {
         shadowColor: '#000000', //그림자색

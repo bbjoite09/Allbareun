@@ -15,6 +15,7 @@ export type RootStackParamList = {
   ChildTab: undefined;
   ParentTab: undefined;
   Pairing: undefined;
+  BodyData: undefined;
 };
 
 const App = () => {
