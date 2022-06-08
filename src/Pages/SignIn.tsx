@@ -13,7 +13,7 @@ import {
 import { useDispatch } from 'react-redux';
 import { RootStackParamList } from '../../App';
 import Typography from '../elements/Typography';
-import { setUserData, setUserId } from '../redux/modules/userInfo';
+import { setUserData, setUserId, setUserType } from '../redux/modules/userInfo';
 import { service } from '../services';
 import { axiosSrc } from '../static/url/axiosSrc';
 
@@ -21,6 +21,7 @@ type Props = NativeStackScreenProps<RootStackParamList, 'SignIn'>;
 
 const SignIn = ({ navigation }: Props) => {
   const [inputs, setInputs] = useState<any>({ id: '', pw: '' });
+  // const [isNew, setNew] = useState<any>();
   const dispatch = useDispatch();
 
   const setUserInfo = async (id: string) => {
@@ -37,20 +38,38 @@ const SignIn = ({ navigation }: Props) => {
           : userInfoData.bodyinfo[userInfoData.bodyinfo.length - 1].user_kcal,
       ),
     );
+
+    if (userInfoData.bodyinfo.length == 0) {
+      return { new: true };
+    } else {
+      return { new: false };
+    }
   };
 
   const handleOnSignIn = async () => {
     const res = await service.user.signIn(inputs.id, inputs.pw);
+    dispatch(setUserType(res.user_type));
+
     if (res.loginSuccess && res.pairing) {
       // 어린이 - 보호자 유형 구분 후 네비게이션 이동
       if (res.user_type == 'parent') {
-        setUserInfo(res.partner);
         dispatch(setUserId(inputs.id, res.partner));
-        navigation.navigate('ParentTab');
+        setUserInfo(res.partner).then(res => {
+          if (res.new) {
+            navigation.navigate('BodyData');
+          } else {
+            navigation.navigate('ParentTab');
+          }
+        });
       } else {
-        setUserInfo(inputs.id);
         dispatch(setUserId(res.partner, inputs.id));
-        navigation.navigate('ChildTab');
+        setUserInfo(inputs.id).then(res => {
+          if (res.new) {
+            navigation.navigate('BodyData');
+          } else {
+            navigation.navigate('ChildTab');
+          }
+        });
       }
     } else if (res.loginSuccess && !res.paring) {
       navigation.navigate('Pairing');
@@ -68,7 +87,7 @@ const SignIn = ({ navigation }: Props) => {
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ backgroundColor: 'white', height: '100%' }}>
       <Image
         source={require('../static/images/logoTop.png')}
         style={styles.logoStyle}
@@ -125,7 +144,7 @@ const SignIn = ({ navigation }: Props) => {
             styles.selectButton,
             {
               marginBottom: 15,
-              bottom: -50,
+              bottom: -20,
               left: Dimensions.get('window').width / 2 - 124,
             },
           ]}
@@ -148,7 +167,7 @@ const SignIn = ({ navigation }: Props) => {
             {
               marginBottom: 30,
               left: Dimensions.get('window').width / 2 - 124,
-              bottom: -120,
+              bottom: -90,
             },
           ]}
           onPress={() => {

@@ -33,19 +33,35 @@ const Pairing = ({ navigation }: Props) => {
     const userInfoData = userInfo.data;
 
     dispatch(setUserData(userInfoData.user.name, userInfoData.user.user_sex));
+
+    if (userInfoData.bodyinfo.length == 0) {
+      return { new: true };
+    } else {
+      return { new: false };
+    }
   };
 
   const handleOnPress = async () => {
     const res = await service.user.pairing(inputs.id);
     if (res.success) {
       if (res.user_type == 'parent') {
-        setUserInfo(res.partner_id);
         dispatch(setUserId(res.user_id, inputs.id));
-        navigation.navigate('ParentTab');
+        setUserInfo(res.partner_id).then(res => {
+          if (res.new) {
+            navigation.navigate('BodyData');
+          } else {
+            navigation.navigate('ParentTab');
+          }
+        });
       } else {
-        setUserInfo(res.user_id);
         dispatch(setUserId(inputs.id, res.user_id));
-        navigation.navigate('ChildTab');
+        setUserInfo(res.user_id).then(res => {
+          if (res.new) {
+            navigation.navigate('BodyData');
+          } else {
+            navigation.navigate('ChildTab');
+          }
+        });
       }
     } else {
       Alert.alert('페어링 실패', res.message ? res.message : null);

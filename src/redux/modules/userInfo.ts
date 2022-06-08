@@ -5,6 +5,7 @@ export interface UserState {
   userKcal: number;
   parentId: string;
   childId: string;
+  userType: string;
 }
 
 // initial state
@@ -15,11 +16,13 @@ const initialState: UserState = {
   userKcal: 1550,
   parentId: 'pa09',
   childId: 'pa09',
+  userType: 'parent',
 };
 
 // action
 export const SET_USER_DATA = 'SET_USER_DATA';
 export const SET_USER_ID = 'SET_USER_ID';
+export const SET_USER_TYPE = 'SET_USER_TYPE';
 
 export const setUserData = (
   name: string,
@@ -43,6 +46,12 @@ export const setUserId = (parentId: string, childId: string) => {
     childId,
   };
 };
+export const setUserType = (userType: string) => {
+  return {
+    type: SET_USER_ID,
+    userType,
+  };
+};
 
 // reducer
 export const userReducer = (state = initialState, action: any) => {
@@ -61,6 +70,12 @@ export const userReducer = (state = initialState, action: any) => {
         ...state,
         parentId: action.parentId,
         childId: action.childId,
+      };
+    }
+    case SET_USER_TYPE: {
+      return {
+        ...state,
+        userType: action.userType,
       };
     }
     default:
