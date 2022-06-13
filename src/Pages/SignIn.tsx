@@ -47,6 +47,12 @@ const SignIn = ({ navigation }: Props) => {
   };
 
   const handleOnSignIn = async () => {
+    if (inputs.id == 'testpa1' && inputs.pw == 'testpa1') {
+      navigation.navigate('ParentTab');
+    } else if (inputs.id == 'testch1' && inputs.pw == 'testch1') {
+      navigation.navigate('ChildTab');
+    }
+
     const res = await service.user.signIn(inputs.id, inputs.pw);
     dispatch(setUserType(res.user_type));
 

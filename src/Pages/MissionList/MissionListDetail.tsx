@@ -120,23 +120,59 @@ const MissionListDetail = ({ navigation, route }: Props) => {
               </View>
             )
           ) : (
-            <View style={[styles.missionContainer]}>
-              <View
-                style={[
-                  styles.missionImage,
-                  { backgroundColor: 'white', borderColor: 'white' },
-                ]}
-              />
-              <View
-                style={{
-                  width: Math.floor(Math.random() * (250 - 130) + 130),
-                  backgroundColor: 'white',
-                  height: 20,
-                  borderRadius: 50,
-                  marginLeft: 20,
-                }}
-              />
-            </View>
+            <>
+              <View style={[styles.missionContainer]}>
+                <View
+                  style={[
+                    styles.missionImage,
+                    { backgroundColor: 'white', borderColor: 'white' },
+                  ]}
+                />
+                <View
+                  style={{
+                    width: Math.floor(Math.random() * (250 - 130) + 130),
+                    backgroundColor: 'white',
+                    height: 20,
+                    borderRadius: 50,
+                    marginLeft: 20,
+                  }}
+                />
+              </View>
+              <View style={[styles.missionContainer]}>
+                <View
+                  style={[
+                    styles.missionImage,
+                    { backgroundColor: 'white', borderColor: 'white' },
+                  ]}
+                />
+                <View
+                  style={{
+                    width: Math.floor(Math.random() * (250 - 130) + 130),
+                    backgroundColor: 'white',
+                    height: 20,
+                    borderRadius: 50,
+                    marginLeft: 20,
+                  }}
+                />
+              </View>
+              <View style={[styles.missionContainer]}>
+                <View
+                  style={[
+                    styles.missionImage,
+                    { backgroundColor: 'white', borderColor: 'white' },
+                  ]}
+                />
+                <View
+                  style={{
+                    width: Math.floor(Math.random() * (250 - 130) + 130),
+                    backgroundColor: 'white',
+                    height: 20,
+                    borderRadius: 50,
+                    marginLeft: 20,
+                  }}
+                />
+              </View>
+            </>
           )}
         </View>
       </ScrollView>
