@@ -50,7 +50,7 @@ const Pairing = ({ navigation }: Props) => {
           if (res.new) {
             navigation.navigate('BodyData');
           } else {
-            navigation.navigate('ParentTab');
+            navigation.reset({ routes: [{ name: 'ParentTab' }] });
           }
         });
       } else {
@@ -59,7 +59,7 @@ const Pairing = ({ navigation }: Props) => {
           if (res.new) {
             navigation.navigate('BodyData');
           } else {
-            navigation.navigate('ChildTab');
+            navigation.reset({ routes: [{ name: 'ChildTab' }] });
           }
         });
       }

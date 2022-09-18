@@ -4,6 +4,7 @@ import {
   Dimensions,
   Image,
   Keyboard,
+  KeyboardAvoidingView,
   Modal,
   Platform,
   Pressable,
@@ -185,7 +186,7 @@ const MyPage = () => {
 
   const handleInput = (title: string, key: string, autoFocuse?: boolean) => {
     return (
-      <View style={[styles.rowContainer, { marginBottom: '5%' }]}>
+      <View style={[styles.rowContainer, { marginBottom: 7 }]}>
         <Typography
           value={title}
           type="subtitle"
@@ -271,38 +272,40 @@ const MyPage = () => {
         {getGraph(heightList)}
         {getGraph(weightList)}
       </ScrollView>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => {
-            setModalVisible(!modalVisible);
-          }}>
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <Typography
-                type="subtitle"
-                value="어린이 정보를 입력해주세요."
-                textStyle={styles.modalText}
-              />
-              <View style={styles.modalInputContainer}>
-                {handleInput('키', 'height', true)}
-                {handleInput('몸무게', 'weight')}
-                {handleInput('나이', 'age')}
-                {handleInput('활동량', 'activeKcal')}
+      <KeyboardAvoidingView>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {
+              setModalVisible(!modalVisible);
+            }}>
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+                <Typography
+                  type="subtitle"
+                  value="어린이 정보를 입력해주세요."
+                  textStyle={styles.modalText}
+                />
+                <View style={styles.modalInputContainer}>
+                  {handleInput('키', 'height', true)}
+                  {handleInput('몸무게', 'weight')}
+                  {handleInput('나이', 'age')}
+                  {handleInput('활동량', 'activeKcal')}
+                </View>
+                <Pressable
+                  style={styles.modalButton}
+                  onPress={async () => {
+                    handleEnroll();
+                  }}>
+                  <Text style={styles.textStyle}>등록</Text>
+                </Pressable>
               </View>
-              <Pressable
-                style={styles.modalButton}
-                onPress={async () => {
-                  handleEnroll();
-                }}>
-                <Text style={styles.textStyle}>등록</Text>
-              </Pressable>
             </View>
-          </View>
-        </Modal>
-      </TouchableWithoutFeedback>
+          </Modal>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
@@ -348,8 +351,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-    width: '80%',
-    height: `${Platform.OS == 'ios' ? '50%' : '63%'}`,
+    width: '83%',
+    height: `${Platform.OS == 'ios' ? '50%' : '65%'}`,
   },
 
   modalButton: {
@@ -357,6 +360,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 10,
     elevation: 2,
+    marginTop: 15,
     backgroundColor: '#8CC751',
   },
   textStyle: {
@@ -365,9 +369,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   modalText: {
-    marginBottom: 15,
-    fontSize: 19,
-    textAlign: 'center',
+    marginBottom: 20,
+    fontSize: 17,
+    textAlign: 'left',
   },
   modalInputContainer: { alignSelf: 'flex-start' },
   modalInput: {

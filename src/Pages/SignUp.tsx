@@ -2,6 +2,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
 import {
   Alert,
+  Dimensions,
   Image,
   Platform,
   Pressable,
@@ -176,8 +177,8 @@ const SignUp = ({ navigation }: Props) => {
 
 const styles = StyleSheet.create({
   logoStyle: {
-    width: '100%',
-    height: 110,
+    width: Dimensions.get('window').width,
+    height: 115,
   },
   container: {
     display: 'flex',

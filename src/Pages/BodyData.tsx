@@ -95,9 +95,9 @@ const BodyData = ({ navigation }: Props) => {
       );
       setInputs({ height: 0, weight: 0, age: 0, activeKcal: 0 });
       if (user.userType == 'parent') {
-        navigation.navigate('ParentTab');
+        navigation.reset({ routes: [{ name: 'ParentTab' }] });
       } else if (user.userType == 'child') {
-        navigation.navigate('ChildTab');
+        navigation.reset({ routes: [{ name: 'ChildTab' }] });
       }
     } else {
       Alert.alert('경고', '모든 값을 입력해주세요.');

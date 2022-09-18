@@ -213,8 +213,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   logoStyle: {
-    width: width,
-    height: 105,
+    width: Dimensions.get('window').width,
+    height: 115,
     marginBottom: 50,
   },
   buttonContainer: {

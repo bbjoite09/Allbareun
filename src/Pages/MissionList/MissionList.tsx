@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
   titleStyle: {
     alignSelf: 'flex-start',
     marginLeft: 20,
-    marginBottom: 15,
+    marginBottom: 20,
     color: '#3F3F3F',
   },
   container: {
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
   },
   logoStyle: {
     width: Dimensions.get('window').width,
-    height: 105,
+    height: 115,
     marginBottom: 50,
   },
 });

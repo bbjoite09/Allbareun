@@ -388,7 +388,7 @@ const styles = StyleSheet.create({
     borderColor: '#E4E4E4',
     borderWidth: 1,
     width: width,
-    height: 76,
+    height: 72,
     marginBottom: -1,
   },
   centeredView: {
@@ -476,9 +476,8 @@ const styles = StyleSheet.create({
     }),
   },
   logoStyle: {
-    width: '105%',
-    height: 105,
-    resizeMode: 'contain',
+    width: Dimensions.get('window').width,
+    height: 115,
     marginBottom: 30,
   },
   container: {

@@ -22,12 +22,12 @@ function ParentTab() {
           tabBarIcon: ({ focused }) =>
             !focused ? (
               <Image
-                source={require('../static/images/Navigation/ic_mission.png')}
+                source={require('../static/images/Navigation/ic_unSelected.png')}
                 style={styles.iconStyle}
               />
             ) : (
               <Image
-                source={require('../static/images/Navigation/ic_missionSelected.png')}
+                source={require('../static/images/Navigation/ic_mission.png')}
                 style={styles.iconStyle}
               />
             ),
@@ -42,18 +42,18 @@ function ParentTab() {
           tabBarIcon: ({ focused }) =>
             !focused ? (
               <Image
-                source={require('../static/images/Navigation/ic_missionList.png')}
+                source={require('../static/images/Navigation/ic_unSelected.png')}
                 style={styles.iconStyle}
               />
             ) : (
               <Image
-                source={require('../static/images/Navigation/ic_missionListSelected.png')}
+                source={require('../static/images/Navigation/ic_missionList.png')}
                 style={styles.iconStyle}
               />
             ),
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Report"
         component={Report}
         options={{
@@ -62,17 +62,17 @@ function ParentTab() {
           tabBarIcon: ({ focused }) =>
             !focused ? (
               <Image
-                source={require('../static/images/Navigation/ic_report.png')}
+                source={require('../static/images/Navigation/ic_unSelected.png')}
                 style={styles.iconStyle}
               />
             ) : (
               <Image
-                source={require('../static/images/Navigation/ic_reportSelected.png')}
+                source={require('../static/images/Navigation/ic_report.png')}
                 style={styles.iconStyle}
               />
             ),
         }}
-      />
+      /> */}
       <Tab.Screen
         name="Mypage"
         component={MyPage}
@@ -82,12 +82,12 @@ function ParentTab() {
           tabBarIcon: ({ focused }) =>
             !focused ? (
               <Image
-                source={require('../static/images/Navigation/ic_myPage.png')}
+                source={require('../static/images/Navigation/ic_unSelected.png')}
                 style={styles.iconStyle}
               />
             ) : (
               <Image
-                source={require('../static/images/Navigation/ic_myPageSelected.png')}
+                source={require('../static/images/Navigation/ic_myPage.png')}
                 style={styles.iconStyle}
               />
             ),
@@ -109,12 +109,12 @@ export function ChildTab() {
           tabBarIcon: ({ focused }) =>
             !focused ? (
               <Image
-                source={require('../static/images/Navigation/ic_mission.png')}
+                source={require('../static/images/Navigation/ic_unSelected.png')}
                 style={styles.iconStyle}
               />
             ) : (
               <Image
-                source={require('../static/images/Navigation/ic_missionSelected.png')}
+                source={require('../static/images/Navigation/ic_mission.png')}
                 style={styles.iconStyle}
               />
             ),
@@ -129,18 +129,18 @@ export function ChildTab() {
           tabBarIcon: ({ focused }) =>
             !focused ? (
               <Image
-                source={require('../static/images/Navigation/ic_missionList.png')}
+                source={require('../static/images/Navigation/ic_unSelected.png')}
                 style={styles.iconStyle}
               />
             ) : (
               <Image
-                source={require('../static/images/Navigation/ic_missionListSelected.png')}
+                source={require('../static/images/Navigation/ic_missionList.png')}
                 style={styles.iconStyle}
               />
             ),
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Report"
         component={Report}
         options={{
@@ -149,17 +149,17 @@ export function ChildTab() {
           tabBarIcon: ({ focused }) =>
             !focused ? (
               <Image
-                source={require('../static/images/Navigation/ic_report.png')}
+                source={require('../static/images/Navigation/ic_unSelected.png')}
                 style={styles.iconStyle}
               />
             ) : (
               <Image
-                source={require('../static/images/Navigation/ic_reportSelected.png')}
+                source={require('../static/images/Navigation/ic_report.png')}
                 style={styles.iconStyle}
               />
             ),
         }}
-      />
+      /> */}
       <Tab.Screen
         name="Mypage"
         component={MyPage}
@@ -169,12 +169,12 @@ export function ChildTab() {
           tabBarIcon: ({ focused }) =>
             !focused ? (
               <Image
-                source={require('../static/images/Navigation/ic_myPage.png')}
+                source={require('../static/images/Navigation/ic_unSelected.png')}
                 style={styles.iconStyle}
               />
             ) : (
               <Image
-                source={require('../static/images/Navigation/ic_myPageSelected.png')}
+                source={require('../static/images/Navigation/ic_myPage.png')}
                 style={styles.iconStyle}
               />
             ),

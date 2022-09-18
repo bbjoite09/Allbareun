@@ -48,9 +48,9 @@ const SignIn = ({ navigation }: Props) => {
 
   const handleOnSignIn = async () => {
     if (inputs.id == 'testpa1' && inputs.pw == 'testpa1') {
-      navigation.navigate('ParentTab');
+      navigation.reset({ routes: [{ name: 'ParentTab' }] });
     } else if (inputs.id == 'testch1' && inputs.pw == 'testch1') {
-      navigation.navigate('ChildTab');
+      navigation.reset({ routes: [{ name: 'ChildTab' }] });
     }
 
     const res = await service.user.signIn(inputs.id, inputs.pw);
@@ -64,7 +64,7 @@ const SignIn = ({ navigation }: Props) => {
           if (res.new) {
             navigation.navigate('BodyData');
           } else {
-            navigation.navigate('ParentTab');
+            navigation.reset({ routes: [{ name: 'ParentTab' }] });
           }
         });
       } else {
@@ -73,7 +73,7 @@ const SignIn = ({ navigation }: Props) => {
           if (res.new) {
             navigation.navigate('BodyData');
           } else {
-            navigation.navigate('ChildTab');
+            navigation.reset({ routes: [{ name: 'ChildTab' }] });
           }
         });
       }
@@ -196,12 +196,12 @@ const SignIn = ({ navigation }: Props) => {
 
 const styles = StyleSheet.create({
   logoStyle: {
-    width: '100%',
-    height: 110,
+    width: Dimensions.get('window').width,
+    height: 115,
   },
   container: {
     display: 'flex',
-    height: '60%',
+    height: '50%',
     justifyContent: 'space-evenly',
     alignItems: 'center',
     position: 'relative',

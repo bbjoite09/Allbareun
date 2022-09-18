@@ -1,7 +1,4 @@
-import { Config } from 'react-native-config';
-
-const IP = Config.IP;
-const baseUrl = `http://${IP}/api`;
+const baseUrl = `https://allbareun.herokuapp.com/api`;
 
 export const url = {
   usersSrc: baseUrl + '/users',

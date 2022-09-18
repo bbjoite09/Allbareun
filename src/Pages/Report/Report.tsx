@@ -18,6 +18,7 @@ import RadarChart from './RadarChart';
 const { width } = Dimensions.get('window');
 
 const Report = () => {
+  /** 
   const dateList = [2021.01, 2022.02, 2022.03, 2022.04, 2022.05];
   // const [dateList, setDateList] = useState();
   // const [acheiveCountList, setAcheiveCountList] = useState();
@@ -131,6 +132,13 @@ const Report = () => {
           textStyle={{ textAlign: 'left', padding: 25 }}
         />
       </ScrollView>
+    </SafeAreaView>
+  );*/ return (
+    <SafeAreaView style={styles.container}>
+      <Image
+        source={require('../../static/images/logoTopDetail.png')}
+        style={styles.logoStyle}
+      />
     </SafeAreaView>
   );
 };

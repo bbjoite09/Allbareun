@@ -156,7 +156,7 @@ const MissionChild = () => {
       <Typography
         value="오늘의 미션"
         type="title"
-        containerStyle={{ marginBottom: 20 }}
+        containerStyle={{ marginBottom: 20, marginTop: 25 }}
       />
       <ScrollView>
         {personalMission.map((data: any, idx: number) => {
@@ -329,9 +329,8 @@ const styles = StyleSheet.create({
     }),
   },
   logoStyle: {
-    width: width,
-    height: 105,
-    marginBottom: 30,
+    width: Dimensions.get('window').width,
+    height: 115,
   },
   container: {
     backgroundColor: 'white',
