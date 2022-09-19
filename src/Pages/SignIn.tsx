@@ -16,11 +16,13 @@ import Typography from '../elements/Typography';
 import { setUserData, setUserId, setUserType } from '../redux/modules/userInfo';
 import { service } from '../services';
 import { axiosSrc } from '../static/url/axiosSrc';
+import LoadingButton from '../elements/LoadingButton';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'SignIn'>;
 
 const SignIn = ({ navigation }: Props) => {
   const [inputs, setInputs] = useState<any>({ id: '', pw: '' });
+  const [isLoading, setLoading] = useState<boolean>(false);
   // const [isNew, setNew] = useState<any>();
   const dispatch = useDispatch();
 
@@ -47,12 +49,6 @@ const SignIn = ({ navigation }: Props) => {
   };
 
   const handleOnSignIn = async () => {
-    if (inputs.id == 'testpa1' && inputs.pw == 'testpa1') {
-      navigation.reset({ routes: [{ name: 'ParentTab' }] });
-    } else if (inputs.id == 'testch1' && inputs.pw == 'testch1') {
-      navigation.reset({ routes: [{ name: 'ChildTab' }] });
-    }
-
     const res = await service.user.signIn(inputs.id, inputs.pw);
     dispatch(setUserType(res.user_type));
 
@@ -61,6 +57,7 @@ const SignIn = ({ navigation }: Props) => {
       if (res.user_type == 'parent') {
         dispatch(setUserId(inputs.id, res.partner));
         setUserInfo(res.partner).then(res => {
+          setLoading(false);
           if (res.new) {
             navigation.navigate('BodyData');
           } else {
@@ -70,6 +67,7 @@ const SignIn = ({ navigation }: Props) => {
       } else {
         dispatch(setUserId(res.partner, inputs.id));
         setUserInfo(inputs.id).then(res => {
+          setLoading(false);
           if (res.new) {
             navigation.navigate('BodyData');
           } else {
@@ -78,16 +76,20 @@ const SignIn = ({ navigation }: Props) => {
         });
       }
     } else if (res.loginSuccess && !res.paring) {
+      setLoading(false);
       navigation.navigate('Pairing');
     } else {
+      setLoading(false);
       Alert.alert('로그인 실패', res.message ? res.message : null);
     }
   };
 
   const handleEnterEvent = () => {
+    setLoading(true);
     if (inputs.id && inputs.pw) {
       handleOnSignIn();
     } else {
+      setLoading(false);
       Alert.alert('경고', '모든 값을 입력해주세요');
     }
   };
@@ -145,28 +147,39 @@ const SignIn = ({ navigation }: Props) => {
         </View>
       </View>
       <View style={{ height: '10%' }}>
-        <Pressable
-          style={[
-            styles.selectButton,
-            {
+        {isLoading ? (
+          <LoadingButton
+            containerStyle={{
               marginBottom: 15,
               bottom: -20,
               left: Dimensions.get('window').width / 2 - 124,
-            },
-          ]}
-          onPress={() => {
-            handleOnSignIn();
-          }}>
-          <Typography
-            value="로그인하기"
-            type="title"
-            textStyle={{
-              textDecorationLine: 'none',
-              color: 'white',
-              fontSize: 20,
             }}
           />
-        </Pressable>
+        ) : (
+          <Pressable
+            style={[
+              styles.selectButton,
+              {
+                marginBottom: 15,
+                bottom: -20,
+                left: Dimensions.get('window').width / 2 - 124,
+              },
+            ]}
+            onPress={() => {
+              setLoading(true);
+              handleOnSignIn();
+            }}>
+            <Typography
+              value="로그인하기"
+              type="title"
+              textStyle={{
+                textDecorationLine: 'none',
+                color: 'white',
+                fontSize: 20,
+              }}
+            />
+          </Pressable>
+        )}
         <Pressable
           style={[
             styles.selectButton,

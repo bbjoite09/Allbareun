@@ -12,13 +12,17 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RadioForm from 'react-native-simple-radio-button';
+import { notInitialized } from 'react-redux/es/utils/useSyncExternalStore';
 import { RootStackParamList } from '../../App';
+import LoadingButton from '../elements/LoadingButton';
 import Typography from '../elements/Typography';
 import { service } from '../services';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'SignUp'>;
 
 const SignUp = ({ navigation }: Props) => {
+  const [isLoading, setLoading] = useState<boolean>(false);
+
   const typeProps = [
     { label: '보호자    ', value: 0 },
     { label: '어린이', value: 1 },
@@ -44,16 +48,20 @@ const SignUp = ({ navigation }: Props) => {
       inputs.sex,
     );
     if (res.success) {
+      setLoading(false);
       navigation.navigate('SignIn');
     } else {
+      setLoading(false);
       Alert.alert('회원가입 실패!', '잠시후 다시 시도해 주세요.');
     }
   };
 
   const handleEnterEvent = () => {
+    setLoading(true);
     if (inputs.id && inputs.pw && inputs.sex && inputs.name && inputs.type) {
       handleOnSignUp();
     } else {
+      setLoading(false);
       Alert.alert('경고', '모든 값을 입력해주세요');
     }
   };
@@ -154,22 +162,38 @@ const SignUp = ({ navigation }: Props) => {
           {handleRadio('성별', sexProps, 'sex', 'F', 'M')}
           {handleRadio('가입유형', typeProps, 'type', 'parent', 'child')}
         </View>
-        <Pressable
-          style={[
-            styles.selectButton,
-            { marginTop: Platform.OS == 'ios' ? 40 : 20 },
-          ]}
-          onPress={async () => handleOnSignUp()}>
-          <Typography
-            value="회원가입하기"
-            type="title"
-            textStyle={{
-              textDecorationLine: 'none',
-              color: 'white',
-              fontSize: 20,
-            }}
+
+        {isLoading ? (
+          <LoadingButton
+            containerStyle={[
+              styles.selectButton,
+              {
+                position: 'relative',
+                marginTop: Platform.OS == 'ios' ? 40 : 20,
+              },
+            ]}
           />
-        </Pressable>
+        ) : (
+          <Pressable
+            style={[
+              styles.selectButton,
+              { marginTop: Platform.OS == 'ios' ? 40 : 20 },
+            ]}
+            onPress={async () => {
+              setLoading(true);
+              handleOnSignUp();
+            }}>
+            <Typography
+              value="회원가입하기"
+              type="title"
+              textStyle={{
+                textDecorationLine: 'none',
+                color: 'white',
+                fontSize: 20,
+              }}
+            />
+          </Pressable>
+        )}
       </View>
     </SafeAreaView>
   );
